@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 绑定到指定接口 -->        
+<mapper namespace="com.example.museum.mapper.AppUserMapper">
+    <!-- 结果映射,前者为数据库表列名,后者为实体类属性 -->
+    <resultMap id="BaseResultMap" type="com.example.museum.model.AppUser">
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="account" jdbcType="VARCHAR" property="account"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+    </resultMap>
+    <!-- ID需要与接口中定义的方法名一致 -->
+    <select id="getAllUsers" resultType="AppUser" resultMap="BaseResultMap">
+        SELECT id,account,password FROM app_user
+    </select>
+    <select id="getAllUsersByCondition" resultMap="BaseResultMap">
+        SELECT * 
+        FROM app_user
+        <where>
+            <if test="id != null">
+                AND id >= #{id}
+            </if>
+            <if test="account != null and account != ''">
+                AND account = #{account}
+            </if>       
+        </where>
+    </select>
+    <select id = "findByUsername" resultMap = "BaseResultMap">
+        select * from app_user where account = #{account}
+    </select>
+    <insert id="AddOneUser">
+        insert into app_user(account,password,admin,frozen)
+        values (#{account},#{password},0,0)
+    </insert>
+</mapper>
