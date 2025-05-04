@@ -1,14 +1,13 @@
 import request from '@/utils/request';
 
 export function getUserList(params) {
-  console.log("now fetching /users");
 
   return request({
     url: '/users',
     method: 'get',
     params
-  }).then(response => {   //注意此处的response是在拦截器中解析好的数据，即response.data
-    const data = response;
+  }).then(response => {
+    const data = response.data;
     console.log(data);
     // 类型校验
     if (!data || !Array.isArray(data)) {

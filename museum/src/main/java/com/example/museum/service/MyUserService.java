@@ -1,39 +1,42 @@
+// src/main/java/com/example/museum/service/IUserService.java
 package com.example.museum.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
-
-import com.example.museum.mapper.AppUserMapper;
 import com.example.museum.model.AppUser;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
-@Service
-public class MyUserService implements UserDetailsService {
-    @Autowired
-    private AppUserMapper userMapper;
-    
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        AppUser user = userMapper.findByUsername(username);
-        if(user == null) throw new UsernameNotFoundException("用户不存在");
-        System.out.println("当前尝试登录用户："+user);
-        return User.withUsername(user.getAccount())
-                    .password(user.getPassword())
-                    .build();
-    }
+/**
+ * 用户服务接口，继承 Spring Security 的用户加载接口，
+ * 并额外定义了获取所有用户及判断账号是否存在的方法。
+ */
+public interface MyUserService extends UserDetailsService {
+    /**
+     * 查询所有用户
+     */
+    List<AppUser> getAllUser();
 
-    public List<AppUser> getAllUser(){
-        return userMapper.getAllUsers();
-    }
-
-    public boolean exitByAccount(String account){
-        List<AppUser> list = userMapper.getAllUsersByCondition(null, account);
-        if(list.size() == 1) return true;
-        else return false;
-    }
+    /**
+     * 判断指定账号是否已存在
+     */
+    Boolean existByAccount(String account);
+    Boolean existByEmail(String email);
+    /**
+     * 按账号名查找用户
+     */
+    AppUser findByAccount(String account);
+    /**
+     * 按邮箱查找用户
+     */
+    AppUser findByEmail(String email);
+    /**
+     * 注册新用户,id不填自增
+     */
+    Boolean addNewUser(AppUser user);
+    /**
+     * 更新用户信息
+     * @param user 用户实体类
+     * @return true / false
+     */
+    Boolean updateOneUser(AppUser user);
 }

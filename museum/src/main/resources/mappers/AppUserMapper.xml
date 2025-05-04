@@ -9,10 +9,13 @@
         <result column="id" jdbcType="INTEGER" property="id"/>
         <result column="account" jdbcType="VARCHAR" property="account"/>
         <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="isFrozen" jdbcType="TINYINT" property="isFrozen"/>
+        <result column="isAdmin" jdbcType="TINYINT" property="isAdmin"/>
     </resultMap>
     <!-- ID需要与接口中定义的方法名一致 -->
     <select id="getAllUsers" resultType="AppUser" resultMap="BaseResultMap">
-        SELECT id,account,password FROM app_user
+        SELECT * FROM app_user
     </select>
     <select id="getAllUsersByCondition" resultMap="BaseResultMap">
         SELECT * 
@@ -23,14 +26,22 @@
             </if>
             <if test="account != null and account != ''">
                 AND account = #{account}
-            </if>       
+            </if>
         </where>
     </select>
     <select id = "findByUsername" resultMap = "BaseResultMap">
         select * from app_user where account = #{account}
     </select>
-    <insert id="AddOneUser">
-        insert into app_user(account,password,admin,frozen)
-        values (#{account},#{password},0,0)
+    <select id="findByEmail" resultMap = "BaseResultMap">
+        select * from app_user where email = #{email}
+    </select>
+
+    <insert id="addOneUser" useGeneratedKeys="true" keyProperty="id">
+        insert into app_user(account,password,email,isAdmin,isFrozen)
+        values (#{account},#{password},#{email},#{isAdmin},#{isFrozen})
     </insert>
+    <update id="updateOneUser">
+        update app_user set account = #{account}, password = #{password}, email=#{email},isAdmin=#{isAdmin},isFrozen=#{isFrozen} where id = #{id}
+    </update>
+    
 </mapper>

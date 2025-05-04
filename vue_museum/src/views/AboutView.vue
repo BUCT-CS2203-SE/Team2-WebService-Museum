@@ -1,4 +1,5 @@
 <template>
+  <topNavigate />
   <div class="about">
     <h1>This is an about page</h1>
     <p>以下是获取到的用户名:</p>
@@ -10,9 +11,11 @@
 
 <script>
 import { getUserList } from '@/api/userinfo';
+import topNavigate from '@/components/topNavigate.vue';
 
 export default {
   name: 'AboutView',
+  components: {topNavigate},
   data() {
     return {
       users: []

@@ -1,6 +1,7 @@
 package com.example.museum;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import javax.sql.DataSource;
@@ -9,7 +10,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.museum.mapper.AppUserMapper;
+import com.example.museum.mapper.VerificationCodeMapper;
 import com.example.museum.model.AppUser;
+import com.example.museum.model.VerificationCode;
+import com.example.museum.service.EmailService;
 import com.example.museum.service.MyUserService;
 
 
@@ -42,11 +46,26 @@ public class MyTest {
         AppUser user = new AppUser();
         user.setAccount("test1");
         user.setPassword("123");
-        int x = apmr.AddOneUser(user);
+        user.setEmail("123@12qq.com");
+        int x = apmr.addOneUser(user);
         System.out.println(x);
     }
     @Test
     void test2(){
-        apmr.deleteById(4L);
+        // apmr.deleteById(5L);
+        AppUser user = myce.findByAccount("test1");
+        user.setPassword("1234");
+        myce.updateOneUser(user);
+        System.out.println(user);
+    }
+
+    @Autowired
+    private VerificationCodeMapper vfcm;
+    @Autowired
+    private EmailService emce;
+    @Test
+    void email_test() throws Exception{
+        emce.sendCode("3309296020@qq.com");
+        System.out.println("Email Test Over");
     }
 }   

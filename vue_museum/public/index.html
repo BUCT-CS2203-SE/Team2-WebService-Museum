@@ -5,13 +5,26 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title><%= htmlWebpackPlugin.options.title %></title>
+    <title>海外文物知识服务子系统</title>
   </head>
   <body>
-    <noscript>
-      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
   </body>
 </html>
+
+<style>
+  
+html, body {
+  margin: 0;           /* 清除默认外边距 */
+  padding: 0;          /* 清除默认内边距 */
+  height: 100%;        /* 保证百分比高度生效 */
+  width: 100%;         /* 可选，确保宽度 */
+  overflow-x: hidden;  /* 防止因 100vw 引起水平滚动 */
+}
+
+#app, .fullscreen {
+  height: 100%;        /* 父层已 100%，这里继承 */
+  width: 100%;         
+}
+</style>
