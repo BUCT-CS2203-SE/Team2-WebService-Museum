@@ -17,10 +17,12 @@ public interface AppUserMapper {
         @Param("id") Long id,
         @Param("account") String account
     );
-
+    //登录逻辑调用
     AppUser findByUsername(@Param("account") String username);
+    AppUser findByEmail(@Param("email") String email);
 
-    int AddOneUser(AppUser user);
+    int addOneUser(AppUser user);
+    int updateOneUser(AppUser user);
     
     /**
      * 第二种写法，简单语句可以直接这样写
