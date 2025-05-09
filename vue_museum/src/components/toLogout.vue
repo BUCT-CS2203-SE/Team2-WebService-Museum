@@ -8,11 +8,12 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import service from '@/utils/request' // 你的 axios 实例
+import Api from '@/api/Api';
 
 const router = useRouter()
 
 async function handleLogout() {
-    await service.post('/logout',{});
+    await service.post(Api.url.logout,{});
     // 1. 清除本地存储中的 Token
     localStorage.removeItem('jwt');                           
     // 2. 取消 axios 请求头上的 Authorization

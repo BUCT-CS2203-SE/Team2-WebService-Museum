@@ -11,6 +11,7 @@
 <script setup>
 import service from '@/utils/request'
 import { ref,defineProps, onBeforeUnmount } from 'vue'
+import Api from '@/api/Api'
 
 const props = defineProps({
   // 运行时声明模式：与 options.props 完全等价
@@ -41,7 +42,7 @@ function formatTime(sec) {
 async function startCountdown() {
     if (disabled.value || props.disabledInitially) return
     console.log("Get Info: " + props.disabledInitially + " and " + props.emailInfo);
-    const data = await service.post('/getCode', { time: new Date().getTime(), email: props.emailInfo });
+    const data = await service.post(Api.url.getCode, { time: new Date().getTime(), email: props.emailInfo });
     alert(data.data.message);
     if(data.data.status == 400) return ;
     remaining.value = data.data.info;        // 获取剩余时间
