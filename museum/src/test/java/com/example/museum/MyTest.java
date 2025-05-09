@@ -59,13 +59,5 @@ public class MyTest {
         System.out.println(user);
     }
 
-    @Autowired
-    private VerificationCodeMapper vfcm;
-    @Autowired
-    private EmailService emce;
-    @Test
-    void email_test() throws Exception{
-        emce.sendCode("3309296020@qq.com");
-        System.out.println("Email Test Over");
-    }
+
 }   
