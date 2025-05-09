@@ -103,6 +103,7 @@ import { ref, onMounted } from 'vue';
 import service from '@/utils/request';
 import { useRouter } from 'vue-router';
 import countDownButton from '@/components/countDownButton.vue';
+import Api from '@/api/Api';
 
 const useAcc = ref(true); //采用何种方式登录，默认账号
 function switchWay(){
@@ -135,12 +136,13 @@ async function onSubmit() {
     //注意函数的使用
     let ac = u.value;
     if(!useAcc.value) ac = uemail.value;
-    const data = await service.post('/login', {way:useAcc.value, user: ac.trim(), password: p.value.trim() });
+    const data = await service.post(Api.url.login, {way:useAcc.value, user: ac.trim(), password: p.value.trim() });
     if(data.data.status === 401) {alert(data.data.message);return ;}
     alert("登录成功!");
     localStorage.setItem('jwt', data.data.token);
+    localStorage.setItem('username',data.data.username);
     // 登录动作中
-    console.log("保存成功："+data.data.token);
+    console.log("保存成功："+data.data.token+ "username: "+data.data.username);
     //登陆成功跳转路径
     router.push('/');
 }
@@ -155,7 +157,7 @@ async function onRegest(){
         rpwdEl.value.reportValidity();
         return ;
     }
-    const response =  await service.post('/regest',{account:newu.value.trim(),password:newp.value.trim(),email:uemail.value.trim()});
+    const response =  await service.post(Api.url.regest,{account:newu.value.trim(),password:newp.value.trim(),email:uemail.value.trim()});
     alert(response.data.message);
     if(response.status === 400) return;
     switchLogin_Regest();
@@ -164,7 +166,7 @@ async function onRegest(){
 const conp = ref(''); //验证码
 const np = ref(''); //新密码
 async function onFindAc() {
-  const resp = await service.post('/forget',{email:uemail.value.trim(),code:conp.value.trim(),newpwd:np.value.trim()});
+  const resp = await service.post(Api.url.forget,{email:uemail.value.trim(),code:conp.value.trim(),newpwd:np.value.trim()});
   alert(resp.data.message);
   if(resp.status == 400) return;
   switchLogin_Forgot();

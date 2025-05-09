@@ -4,7 +4,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,6 +33,7 @@ import io.jsonwebtoken.security.Keys;
  * 用于登录、注册、找回密码
  */
 @RestController
+@Transactional
 public class AuthController {
 
     @Autowired
@@ -68,7 +69,7 @@ public class AuthController {
                     .signWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)),
                             SignatureAlgorithm.HS256)
                     .compact(); // 生成 JWT
-            return Collections.singletonMap("token", token); // 返回 {"token":"..."}
+            return Map.of("token",token,"username",nowAccount); // 返回 {"token":"..."}
         } catch (Exception e) {
             throw new UserNotExistException("密码错误!");
         }
