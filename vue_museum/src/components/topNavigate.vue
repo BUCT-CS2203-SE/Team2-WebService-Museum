@@ -7,23 +7,23 @@
     </div>
     <div class="box2">
       <div class="box3">
-        <ul><router-link to="/">首页</router-link> </ul>
+        <ul><router-link class="nav-link" active-class="active" to="/">首页</router-link> </ul>
         <span class="aline"></span>
       </div>
       <div class="box3">
-        <ul><router-link to="/search">文物搜索</router-link></ul>
+        <ul><router-link class="nav-link" active-class="active" to="/search">文物搜索</router-link></ul>
         <span class="aline"></span>
       </div>
       <div class="box3">
-        <ul><router-link to="/timebar">时间轴</router-link></ul>
+        <ul><router-link class="nav-link" active-class="active" to="/timebar">时间轴</router-link></ul>
         <span class="aline"></span>
       </div>
       <div class="box3">
-        <ul><router-link to="/knowledgemap">知识图谱</router-link></ul>
+        <ul><router-link class="nav-link" active-class="active" to="/knowledgemap">知识图谱</router-link></ul>
         <span class="aline"></span>
       </div>
       <div class="box3">
-        <ul><router-link to="/userinfo">用户信息</router-link></ul>
+        <ul><router-link class="nav-link" active-class="active" to="/userinfo">用户信息</router-link></ul>
         <span class="aline"></span>
       </div>
     </div>
@@ -72,6 +72,7 @@
   text-decoration: none;
   font-style: none;
   color: black;
+  padding: 6px;
 }
 .box3 .aline{
   position: absolute;
@@ -88,5 +89,8 @@
   transform: scaleX(80%);
 }
 
+.nav-link.active {
+  color: #0087ca;
+}
 
 </style>
