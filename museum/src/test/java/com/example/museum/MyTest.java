@@ -26,6 +26,7 @@ public class MyTest {
     @Autowired
     private DataSource dataSource;
     
+    
     @Test
     void dataSource() throws SQLException{
         System.out.println(dataSource.getConnection());
@@ -38,26 +39,35 @@ public class MyTest {
             System.out.println(i);
         }
     }
+    
+    //以下测试选做，都能使用
+    // @Autowired
+    // private AppUserMapper apmr;
+    // @Test
+    // void Test1(){
+    //     AppUser user = new AppUser();
+    //     user.setAccount("test1");
+    //     user.setPassword("123");
+    //     user.setEmail("123@12qq.com");
+    //     int x = apmr.addOneUser(user);
+    //     System.out.println(x);
+    // }
+    // @Test
+    // void test2(){
+    //     // apmr.deleteById(5L);
+    //     AppUser user = myce.findByAccount("test1");
+    //     user.setPassword("1234");
+    //     myce.updateOneUser(user);
+    //     System.out.println(user);
+    // }
 
-    @Autowired
-    private AppUserMapper apmr;
-    @Test
-    void Test1(){
-        AppUser user = new AppUser();
-        user.setAccount("test1");
-        user.setPassword("123");
-        user.setEmail("123@12qq.com");
-        int x = apmr.addOneUser(user);
-        System.out.println(x);
-    }
-    @Test
-    void test2(){
-        // apmr.deleteById(5L);
-        AppUser user = myce.findByAccount("test1");
-        user.setPassword("1234");
-        myce.updateOneUser(user);
-        System.out.println(user);
-    }
-
-
+    // @Autowired
+    // private VerificationCodeMapper vfcm;
+    // @Autowired
+    // private EmailService emce;
+    // @Test
+    // void email_test() throws Exception{
+    //     emce.sendCode("3309296020@qq.com");
+    //     System.out.println("Email Test Over");
+    // }
 }   
