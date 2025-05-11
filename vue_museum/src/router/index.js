@@ -32,7 +32,16 @@ const routes = [
     path: '/userinfo',
     name: 'userinfo',
     component: () => import('../views/UserInfoView.vue'),
-    meta: {public:false, hasNav: true}
+    meta: {public:true, hasNav: true}
+  },{
+    path: '/relic',
+    name: 'RelicDetail',
+    component: () => import('../views/RelicDetail.vue'),
+    // 将 query.id 转成数字后，作为组件的 props.id
+    props: (route) => ({
+      id: Number(route.query.id)
+    }),
+    meta: {public:true, hasNav: true}
   }
 ]
 
