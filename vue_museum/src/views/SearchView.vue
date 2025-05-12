@@ -1,10 +1,11 @@
 <template>
   <div class="select-box">
-    <SelectInput name="文物类别" :options="[{value:'0',label:'全部'}]"/>
-    <SelectInput name="文物年代" :options="[{value:'1',label:'全部'}]"/>
-    <SelectInput name="所在博物馆" :options="[{value:'2',label:'全部'}]"/>
-    <SelectInput name="排序方式" :options="[{value:'3',label:'全部'}]"/>
-    <InputButton placeholder="文物名称：" />
+    <SelectInput v-model="sendInfo.type" name="文物类别" :options="catas"/>
+    <SelectInput v-model="sendInfo.time" name="文物年代" :options="dynasty"/>
+    <SelectInput v-model="sendInfo.museum" name="所在博物馆" :options="museum"/>
+    <SelectInput v-model="sendInfo.sortby" name="排序方式" :options="sortBy"/>
+    <InputButton placeholder="文物名称：" v-model="sendInfo.name" />
+    <InputButton placeholder="作家名称：" style="margin-left: -25px;" v-model="sendInfo.artist" />
     <SmoothButton label="查询" @click="Onclick" />
   </div>
 
@@ -25,12 +26,15 @@
 </template>
 
 <script setup>
-import { ref,watch } from 'vue'
+import { onMounted, ref,watch,reactive } from 'vue'
 import SingleRelic from '@/components/SingleRelic.vue';
 import SelectInput from '@/components/SelectInput.vue';
 import InputButton from '@/components/InputButton.vue';
 import SmoothButton from '@/components/SmoothButton.vue';
 import PageController from '@/components/PageController.vue';
+import { getcatasETcList } from '@/api/SearchRelic';
+import Api from '@/api/Api';
+import { message } from 'ant-design-vue';
 
 // 这里的数组元素个数为8，本地得使用require
 const relics = ref([
@@ -44,13 +48,44 @@ const relics = ref([
   {id: 8, src: "../assets/logo.png",  title: '文物标题 A' },
 ]);
 
+/**需要发送的结构体 */
+const sendInfo = reactive({
+  type:null,      //文物类型
+  time:null,      //文物时代
+  museum: null,   //博物馆
+  sortby:null,    //排序方式,null按iD，1按名称，2按年代
+  name: null,     //按名称模糊查询
+  artist: null    //按作家查询
+})
+
 function Onclick(){
-    console.log("Button was Clicked");
+  console.log("Button was Clicked   "+sendInfo.sortby);
 }
 const total = ref('100'); //
 const nowpage = ref(1);
+//页面切换逻辑
 watch(nowpage, (newval, oldval) => {
   console.log('旧值：', oldval, '新值：', newval);
+})
+const catas = ref([{ value: 'null', label: '全部' }]);//种类
+const dynasty = ref([{ value: 'null', label: '全部' }]);//朝代信息
+const museum = ref([{ value: 'null', label: '全部' }]);//博物馆名
+const sortBy = ref([
+  { value: 'null', label: '文物ID' },
+  { value: 1, label: '文物名称' },
+  { value: 2, label: '文物年代' },
+  // { value: '3', label: '博物馆名称' },
+]);//排序规则
+
+onMounted(async () => {
+  try {
+    /**获取选择框内容,均包含全部选项对应值null */
+    catas.value = await getcatasETcList(Api.url.relic.types);
+    dynasty.value = await getcatasETcList(Api.url.relic.times);
+    museum.value = await getcatasETcList(Api.url.relic.museums);
+  } catch (error) {
+    message.error(error);
+  }
 })
 </script>
 
@@ -64,7 +99,7 @@ watch(nowpage, (newval, oldval) => {
   justify-items: center;                    /* 每个格子里内容居中 */
   padding-bottom: 40px;
   /* 限制显示两行，超出折行后隐藏 */
-  max-height: calc( (/* SingleRelic 高度 */ 240px + 16px) * 2 - 16px );
+  max-height: calc( (270px + 16px) * 2 - 16px );
   /* 两行高度 = 240px*2 + row-gap(16px)；减去最后一行下方的额外 gap */
   overflow: hidden;
 }
@@ -76,7 +111,7 @@ watch(nowpage, (newval, oldval) => {
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 50px;
+  gap: 30px;
 }
 .page-control{
   margin: 8px 0px;

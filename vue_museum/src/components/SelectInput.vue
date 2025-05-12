@@ -1,34 +1,46 @@
-<!-- 选择框组件 -->
 <template>
   <div class="select-wrapper">
-    <select v-model="selected">
+    <select
+      :value="modelValue" 
+      @change="onChange"
+    >
+      <!-- 占位 option -->
       <option disabled value="">{{ props.name }}</option>
-      <option v-for="opt in props.options" :key="opt.value" :value="opt.value">
-        {{ opt.label }}
-      </option>
+
+      <!-- 真正的选项 -->
+      <option
+        v-for="opt in options"
+        :key="opt.value"
+        :value="opt.value"
+      >{{ opt.label }}</option>
     </select>
   </div>
 </template>
 
 <script setup>
-import { ref,defineProps } from 'vue'
+import { defineProps, defineEmits } from 'vue'
 
 const props = defineProps({
-    /**表面显示的字样 */
-    name:{type: String, default:"请选择"},
-    /**可选项数组 */
-    options: {
-        type: Array,
-        default: () => [
-            {value: '0', label:'全部'},
-            { value: 'z', label: '选项 A' },
-            { value: 'b', label: '选项 B' },
-            { value: 'c', label: '选项 C' },
-        ]
-    }
+  name:     { type: String, default: '请选择' },
+  options:  {
+    type: Array,
+    default: () => [
+      { value: '0', label: '全部' }
+    ]
+  },
+  // 3. v-model 绑定的值就是 modelValue
+  modelValue: {
+    type: [String, Number, null],
+    default: ''
+  }
 })
 
-const selected = ref('')
+const emit = defineEmits(['update:modelValue'])
+
+// 当 select 改变时，向父组件发出 update:modelValue
+function onChange(event) {
+  emit('update:modelValue', event.target.value)
+}
 </script>
 
 <style scoped>
@@ -37,26 +49,19 @@ const selected = ref('')
   position: relative;
   font-family: sans-serif;
 }
-
 /* 隐藏原生箭头 */
 select {
-  -webkit-appearance: none;
-  -moz-appearance: none;
   appearance: none;
-
   width: 100%;
   padding: 0.6em 1.2em;
   line-height: 1.2;
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #fff;
-  background-image: none;
   font-size: 1em;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
 }
-
-/* 自定义下拉箭头 */
+/* 自定义箭头 */
 .select-wrapper::after {
   content: '▾';
   position: absolute;
@@ -64,18 +69,14 @@ select {
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
-  font-size: 0.8em;
   color: #666;
 }
-
-/* 获取焦点时高亮边框 */
+/* 焦点和悬停效果 */
 select:focus {
   border-color: #66afe9;
-  box-shadow: 0 0 0 3px rgba(102, 175, 233, 0.3);
+  box-shadow: 0 0 0 3px rgba(102,175,233,0.3);
   outline: none;
 }
-
-/* 鼠标悬停时微微改变背景 */
 select:hover {
   background-color: #f9f9f9;
 }

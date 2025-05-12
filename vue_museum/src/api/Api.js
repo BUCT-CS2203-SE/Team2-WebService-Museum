@@ -4,29 +4,29 @@
 export default{
     url: {
         /**后端已完成路由 */
-        /**登录 */
+        /**登录 OK*/
         login: '/login',
-        /**退出登录 */
+        /**退出登录 OK*/
         logout: '/logout',
-        /**注册 */
+        /**注册 OK*/
         regest: '/regest',
-        /**忘记密码 */
+        /**忘记密码 OK*/
         forget: '/forget',
-        /**获取邮箱验证码 */
+        /**获取邮箱验证码 OK*/
         getCode: '/getCode',
-        /**获取文物信息 **/
+        /**获取文物信息 OK**/
         getWenWu: '/getWenWu',
-        /**获取当前用户信息 **/
+        /**获取当前用户信息 OK**/
         getUserInfo: '/getUserInfo',
-        /**修改用户信息 **/
+        /**修改用户信息 OK**/
         changeUserInfo: '/changeUserInfo',
-        /**以下是后端需要返回数据的路径(''之间是路径),后端负责人完成后将这里的信息移到上方 */
+        /**以下是后端需要返回数据的路径(''之间是路径),后端负责人完成后将这里的信息标注为OK */
         relic:{
-            /**需要返回文物的所有类别如瓷器等，返回类型list */
+            /**get 请求参数：无，需要返回文物的所有类别如瓷器等，返回类型list */
             types:'/relic/relic_types',
-            /**需要返回文物朝代信息，如新石器时代、宋代等，返回类别list */
+            /**get 请求参数：无，需要返回文物朝代信息，如新石器时代、宋代等，返回类别list */
             times:'/relic/relic_times',
-            /**需要返回文物现所在博物馆信息，如大英博物馆，返回类别list */
+            /**get 请求参数：无，需要返回文物现所在博物馆信息，如大英博物馆，返回类别list */
             museums:'/relic/relic_museums',
             /**时间轴界面Api要求，完成后标注0K*/
             timeline:{
@@ -62,10 +62,8 @@ export default{
             /**post 请求参数：用户名，更新用户头像
              * avatar    头像图片地址
              */
-
         }
                 
      },
 
-}
 }

@@ -18,6 +18,7 @@
 import { ref, watch, defineProps } from 'vue'
 import logo from '@/assets/logo.png'
 import { useRouter } from 'vue-router'
+import { message } from 'ant-design-vue'
 
 const props = defineProps({
   id:  { type: Number, required: true },
@@ -32,10 +33,9 @@ const imgSrc = ref(props.src)
 watch(() => props.src, (newSrc) => {
   imgSrc.value = newSrc
 })
-
 // 图片加载失败时，使用默认失败图
 const onImgError = () => {
-  console.log("加载图片失败!");
+  message.error("加载图片失败!");
   imgSrc.value = logo; // 替换为你项目中存在的默认图路径
 }
 const router = useRouter();
@@ -50,7 +50,7 @@ function goDetail() {
 
 <style scoped>
 .relic_pos {
-  height: 240px;
+  height: 270px;
   width: 240px;
   background-color: gainsboro;
   border-radius: 8px;
@@ -66,16 +66,17 @@ function goDetail() {
   border-radius: 4px;
   transition: transform 0.3s ease;
   cursor: pointer;  
+  justify-self: center;
 }
 .tupian:hover {
   transform: scale(1.15);
 }
 .relic_pos .lay {
   display: grid;
-  grid-template-rows: 5fr 1fr;
+  grid-template-rows: auto;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 12px;
   overflow: hidden;
 }
 .relic_pos .tlt {
