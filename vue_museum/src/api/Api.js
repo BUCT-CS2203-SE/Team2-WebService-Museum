@@ -28,35 +28,44 @@ export default{
             times:'/relic/relic_times',
             /**需要返回文物现所在博物馆信息，如大英博物馆，返回类别list */
             museums:'/relic/relic_museums',
+            /**时间轴界面Api要求，完成后标注0K*/
+            timeline:{
+                /**get 请求参数:无，需要返回时间轴数据，结构1ist[map],说明如下:
+                 * *数组按文物朝代递增只取第一件文物数据，map字段解释如下
+                 * id      整型数字文物id
+                 * imgUrl    首张文物图片地址
+                 * name      文物名称
+                 * dynasty   文物朝代
+                 * dateRange 文物年代
+                 */
+                data:'/relic/timeline',
+        },
+        user:{
+            getInfo:"/user/getInfo",
+            /** get  请求参数：用户名，返回用户数据，说明如下：
+             * username  用户名
+             * realname  真实姓名
+             * idNumber  身份证号
+             * phone     手机号
+             * email     邮箱
+             * avatar    头像图片地址
+            */
+            sendInfo:"/user/sendInfo",
+            /**post 请求参数：用户名，更新除了用户名以外的信息
+             * password  密码
+             * realname  真实姓名
+             * idNumber  身份证号
+             * phone     手机号
+             * email     邮箱
+             */
+            upgradeAvatar:"/user/upgradeAvatar",
+            /**post 请求参数：用户名，更新用户头像
+             * avatar    头像图片地址
+             */
+
         }
-    },
-   data:{
-    getWenWu:{
-        0: {id: 1, imageUrl: 'https://picsum.photos/300/200?random=0', name: '夏朝 青铜器', dynasty: '夏朝', dateRange: '约1000-900年'},
-        1: {id: 2, imageUrl: 'https://picsum.photos/300/200?random=1', name: '商朝 瓷器', dynasty: '商朝', dateRange: '约1100-1000年'},
-        2: {id: 3, imageUrl: 'https://picsum.photos/300/200?random=2', name: '周朝 玉器', dynasty: '周朝', dateRange: '约1200-1100年'},
-    },
-    getUserInfo:{
-        username:'test',
-        realname:'张三',
-        idNumber: '320123199001011234',
-        phone: '13800138000',
-        email: 'test@example.com',
-        avatar: 'https://randomuser.me/api/portraits/men/1.jpg',//头像图片格式应为JPG或PNG  
-    },
-    changeUserInfo:{
-        username:'test111',
-        password:'123456',
-        realname:'张三123',
-        idNumber: '3201231999999999',
-        phone: '1389990138000',
-        email: 'test111@example.com',
-        avatar: 'https://randomuser.me/api/portraits/men/1.jpg',//头像图片格式应为JPG或PNG
-    },
-   },
-   method:{
-    getWenWu:'get',
-    getUserInfo:'get',
-    changeUserInfo:'post',
-   }
+                
+     },
+
+}
 }

@@ -43,6 +43,7 @@ import { ref, onMounted, computed } from "vue";
 import { message } from "ant-design-vue";
 import { LeftOutlined, RightOutlined } from '@ant-design/icons-vue'; // 修改3: 引入图标
 import TimeLine from "@/components/TimeLine.vue";
+import api from "../api/Api.js"
 //import axios from "@/utils/request";//测试时要注释掉，正式使用时取消注释
 
 const itemList = ref([]);
@@ -108,7 +109,7 @@ const checkScrollPosition = () => {
     
      // 修改3: 直接使用Mock数据而不是axios请求
      const mockData = generateMockData();
-     //console.log(mockData);
+     console.log(api.url.relic.timeline.data);
      itemList.value = mockData.map(item => ({
        id: item.id,
        imgUrl: item.imageUrl,
@@ -134,7 +135,7 @@ const checkScrollPosition = () => {
 //   try {
 //     loading.value = true;
 //     error.value = null;
-//     const response = await axios.get('/relics/timeline');     
+//     const response = await axios.get(api.url.relic.timeline.data);     
 //     itemList.value = response.data.map(item => ({
 //       id: item.id,
 //       imgUrl: item.imageUrl,

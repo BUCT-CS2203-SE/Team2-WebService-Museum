@@ -74,6 +74,7 @@
 import { reactive, ref, onMounted } from 'vue';
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
+import api from "../api/Api.js"
 import axios from '@/utils/request'; // 修改,mork测试时注释，实际使用时取消注释
 
 // 头像上传状态
@@ -205,7 +206,7 @@ const rules = {
 const fetchUserProfile = async () => {
   try {
     loading.value = true;
-    const response = await axios.get('/user/profile'); // 假设后端接口是/user/profile
+    const response = await axios.get(api.url.user.getInfo); 
     const userData = response.data;
     
     // 将接口数据映射到表单
@@ -253,7 +254,7 @@ const handleAvatarChange = (info) => {
   if (info.file.status === 'done') {
     // 这里应该调用API上传头像
     // 模拟上传成功后更新头像
-    formState.avatar = URL.createObjectURL(info.file.originFileObj);
+    formState.avatar = URL.createObjectURL(api.url.user.upgradeAvatar);
     loading.value = false;
     message.success('头像上传成功');
   }
@@ -277,7 +278,7 @@ const onFinish = async (values) => {
       avatar: values.avatar
     };
     
-    await axios.put('/user/profile', submitData);
+    await axios.put(api.url.user.sendInfo, submitData);
     message.success('个人信息更新成功');
   } catch (error) {
     message.error('更新失败: ' + (error.response?.data?.message || error.message));
