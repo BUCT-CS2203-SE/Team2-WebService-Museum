@@ -164,6 +164,7 @@ const formState = reactive({
 // };
 //以上是测试用，实际使用时要注释
 //以下是测试时注释，实际使用时取消注释
+
 // 表单验证规则（保持不变）
 const rules = {
   password: [
@@ -225,7 +226,7 @@ const fetchUserProfile = async () => {
   }
 };
 
- //  组件挂载时获取用户数据
+ // 组件挂载时获取用户数据
  onMounted(() => {
    fetchUserProfile();
  });

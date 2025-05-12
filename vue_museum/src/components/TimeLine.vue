@@ -8,8 +8,9 @@
         <div class="card-top" v-if="index%2 === 0" :class="index===current ? 'card-active' : ''">
           <img :src="item.imgUrl" alt="" style="width: 90px;height:90px;border-radius: 8px;">
           <div class="content">
-            <div>{{ item.date }}</div>
             <div>{{ item.title }}</div>
+            <div>{{ item.date }}</div>
+            <div>{{ item.dynasty }}</div>
           </div>
         </div>
         <!--        占位-->
@@ -21,8 +22,9 @@
         <div class="card-bottom" v-if="index%2 !== 0" :class="index===current ? 'card-active' : ''">
           <img :src="item.imgUrl" alt="" style="width: 90px;height:90px;border-radius: 8px;">
           <div class="content">
-            <div>{{ item.date }}</div>
             <div>{{ item.title }}</div>
+            <div>{{ item.date }}</div>
+            <div>{{ item.dynasty }}</div>
           </div>
         </div>
         <!--        占位-->
@@ -53,7 +55,7 @@ const current = ref(0);
 /** 滚动容器 */
 const timeline = ref(null);
 
-/** 下一个 **/
+// /** 下一个 **/
 const next = () => {
   if (current.value < props.items.length - 1) {
     timeline.value.children[current.value + 1].scrollIntoView({
@@ -97,6 +99,7 @@ const isLast = computed(() => {
   align-items: center;
   justify-content: space-between;
   transition: sroll linear 2s;
+  margin-top: 200px;
 }
 
 .main .timeline {
@@ -158,7 +161,7 @@ const isLast = computed(() => {
 
 .card-top, .card-bottom {
   position: relative;
-  width: 220px;
+  width: 250px;
   height: 120px;
   box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.3);
   border-radius: 8px;
