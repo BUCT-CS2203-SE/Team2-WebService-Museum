@@ -42,6 +42,14 @@ const routes = [
       id: Number(route.query.id)
     }),
     meta: {public:true, hasNav: true}
+  },{
+    path:'/comments',
+    name: 'Comments',
+    component: () => import('../views/CommentsView.vue'),
+    props: (route) => ({
+      id: Number(route.query.id)
+    }),
+    meta: {public:true, hasNav: true}
   }
 ]
 

@@ -1,4 +1,11 @@
 <template>
+  
+  <a-page-header
+    title="文物详情"
+    :sub-title="relic.name"
+    @back="goBack"
+  />
+  
   <div class="detail-container">
     <!-- 左侧：轮播缩略图 -->
     <div class="detail-image">
@@ -8,21 +15,18 @@
         @click="prevImage" 
         :disabled="currentIndex <= 0"
       >‹</button>
-
       <img
         :key="currentIndex"       
         :src="currentImage"
         alt="文物缩略"
         @click="openZoom"
       />
-
       <!-- 右箭头 -->
       <button 
         class="carousel-btn right" 
         @click="nextImage" 
         :disabled="currentIndex >= images.length - 1"
       >›</button>
-
       <!-- 下方小圆点指示 -->
       <div class="dots">
         <span
@@ -35,14 +39,50 @@
     </div>
 
     <!-- 右侧：文物信息 -->
-    <div class="detail-info">
-      <h1>{{ props.id }}</h1>
-      <h2 class="info-title">{{ relic.name }}</h2>
-      <p class="info-era">年代：{{ relic.era }}</p>
-      <div class="info-desc">
-        <h3>详细介绍</h3>
-        <p>{{ relic.description }}</p>
+    <div class="detailinfo-box">
+      <div class="detail-info">
+        <h2 class="info-title">{{ relic.name }}</h2>
+        <p class="info-era">年代：{{ relic.era }}</p>
+        <div class="info-desc">
+          <h3>详细介绍</h3>
+          <p>{{ relic.description }}</p>
+        </div>
       </div>
+
+      <div class="icon-box">
+        <div class="icon-item" @click="onFavorite">
+          <StarFilled
+            v-if="fav"
+            class="icon"
+            style="color: #409eff;"
+          />
+          <StarOutlined
+            v-else
+            class="icon"
+          />
+          <span class="label">收藏</span>
+        </div>
+        <div class="icon-item" @click="onComment">
+          <message-outlined class="icon" />
+          <span class="label">评论</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="associate">
+    <span class="associate-title">相关推荐</span>
+    <div class="associate-list">
+      <a
+        v-for="(item, idx) in relatedItems"
+        :key="idx"
+        :href="item.link"
+        class="associate-item"
+        target="_blank"
+        rel="noopener"
+      >
+        {{ item.text }}
+      </a>
     </div>
   </div>
 
@@ -59,19 +99,29 @@
       @wheel.prevent="onWheel"
       @mousedown.prevent="startDrag"
     />
+    
     <button class="zoom-close" @click="closeZoom">✕</button>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, computed, defineProps } from 'vue'
+import { ref, reactive, computed, defineProps,onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { StarOutlined, StarFilled, MessageOutlined } from '@ant-design/icons-vue'
 
+const router = useRouter()
+//返回上一页
+function goBack() {
+  router.back()      // 或者 router.go(-1)
+}
+/**路由获取的数据 */
 const props = defineProps({
   id: { type: Number, required: true }
 })
 
 // 模拟获取多张图，真实项目从后端请求
-const relic = {
+const relic = ref({
+  id: props.id,
   images: [
     require('@/assets/logo.png'),
     require('@/assets/logo.png'),
@@ -79,16 +129,17 @@ const relic = {
     // require("C:/Users/lcx/Pictures/Screenshots/屏幕截图 2024-11-08 192429.png"),
     "https://www.njmuseum.com/files/nb/collection/modify/2021/09/28/5%EF%BC%9A3419-B-01.jpg"
   ],
-  name: '文物示例',
+  name: '文物名称',
   era: '唐代',
-  description: '这是文物详细介绍……'
-}
+  description:'文物描述具体信息',
+  favorited:false
+})
 
-const images = relic.images
+const images = relic.value.images
 const currentIndex = ref(0)
 const currentImage = computed(() => images[currentIndex.value])
 
-// 切换函数
+// 图片切换函数
 function prevImage() {
   if (currentIndex.value > 0) currentIndex.value--
 }
@@ -144,14 +195,44 @@ const zoomStyle = computed(() => ({
   transform: `scale(${zoomState.scale}) translate(${zoomState.offsetX / zoomState.scale}px, ${zoomState.offsetY / zoomState.scale}px)`,
   cursor: zoomState.dragging ? 'grabbing' : 'grab'
 }))
+
+const fav = ref(relic.value.favorited); //是否收藏
+// 处理点击
+function onFavorite() {
+  fav.value = !fav.value;
+  console.log('点击收藏:- '+fav.value)
+}
+//跳转评论区
+function onComment() {
+  console.log('点击评论')
+  router.push({
+    path:'/comments',
+    query:{id:props.id}
+  })
+}
+
+// 示例数组，真实场景可在 onMounted 中通过接口拉取
+const relatedItems = ref([])
+onMounted(() => {
+  // 模拟后端数据：text 为显示文字，link 为跳转链接
+  relatedItems.value = [
+    { text: '青铜器', link: '/search?type=bronze' },
+    { text: '陶瓷',   link: '/search?type=ceramics' },
+    { text: '书画',   link: '/search?type=painting' },
+    { text: '玉器',   link: '/search?type=jade' }
+  ]
+})
 </script>
 
 <style scoped>
 .detail-container {
-  display: flex;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  /* align-items: center; */
   gap: 32px;
-  padding: 24px;
+  padding: 16px;
+  margin-left: 12%;
+  /* margin-top: 3%; */
 }
 .detail-image {
   position: relative;
@@ -222,5 +303,172 @@ const zoomStyle = computed(() => ({
   position: absolute; top: 24px; right: 24px;
   background: transparent; border: none;
   color: #fff; font-size: 2em; cursor: pointer;
+}
+/**信息展示区样式 */
+.detailinfo-box{
+  max-width: fit-content;
+  display: flex;
+  flex-direction: row;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  color: #333;  
+}
+.detail-info {
+  width: 560px;
+  background-color: #ffffff;
+  padding: 24px;
+}
+
+/* ID （可选，用于小标题或辅助信息） */
+.detail-info h1 {
+  margin: 0 0 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* 主标题 */
+.detail-info .info-title {
+  display: inline-block;    /* 让 ::before 的百分比定位相对于这个元素 */
+  position: relative;
+  padding-left: 15px;       /* 留出空间给那条线 */
+  line-height: 1.2;         /* 或者你自己的行高 */
+  font-size: 2em;
+}
+
+.detail-info .info-title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;                 /* 垂直中心 */
+  transform: translateY(-50%);
+  width: 4px;
+  height: 1.2em;            /* 和文字高度一致 */
+  background-color: #409eff;
+  border-radius: 2px;
+}
+
+/* 年代信息 */
+.detail-info .info-era {
+  margin: 0 0 24px;
+  font-size: 1rem;
+  font-style: italic;
+  color: #666;
+}
+
+/* 详情介绍区域 */
+.detail-info .info-desc {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #444;
+}
+
+/* 详情小标题 */
+.detail-info .info-desc h3 {
+  margin: 0 0 8px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  border-bottom: 2px solid #409eff;
+  padding-bottom: 4px;
+  color: #222;
+}
+
+/* 详情文字段落 */
+.detail-info .info-desc p {
+  margin: 0 0 16px;
+  line-height: 1.6;
+  color: #555;
+
+  /* 以下三行保证文本长单词/URL也会换行 */
+  white-space: normal;       /* 默认的换行规则 */
+  word-wrap: break-word;     /* 旧版浏览器兼容 */
+  overflow-wrap: anywhere;   /* CSS 新属性，任何位置都可换行 */
+}
+
+
+/* 响应式：在小屏幕上让文字区全宽 */
+@media (max-width: 768px) {
+  .detail-info {
+    padding: 16px;
+    box-shadow: none;
+  }
+  .detail-info .info-title {
+    font-size: 1.6rem;
+  }
+  .detail-info .info-desc h3 {
+    font-size: 1rem;
+  }
+}
+
+.icon-box {
+  display: flex;
+  flex-direction: column;    /* 竖直排列 */
+  align-items: center;
+  gap: 16px;                 /* 图标间距 */
+  padding: 20px 20px;
+}
+
+.icon-item {
+  display: flex;
+  flex-direction: column;    /* 图标在上，文字在下 */
+  align-items: center;
+  cursor: pointer;
+  color: #555;
+  transition: color 0.2s;
+}
+
+.icon-item:hover {
+  color: #1890ff;
+}
+
+.icon {
+  font-size: 24px;           /* 图标大小 */
+}
+
+.label {
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+.associate {
+  margin: 0px 40px;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  border-top: 2px solid #409eff;
+  padding-top: 8px;   /* 边框下方留点距离 */
+}
+
+.associate-title {
+  padding: 10px;
+  margin-right: 8px;
+  font-weight: 500;
+  color: #333;
+  font-size: 20px;
+}
+
+.associate-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.associate-item {
+  display: inline-block;
+  padding: 2px 8px;
+  border: 1px solid #aaa;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #555;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+
+.associate-item:hover {
+  background: #409eff20;    /* 20% 不透明度的主题色 */
+  border-color: #409eff;
+  color: #409eff;
 }
 </style>
