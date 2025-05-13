@@ -36,7 +36,7 @@ export default{
                  * imgUrl    首张文物图片地址
                  * name      文物名称
                  * dynasty   文物朝代
-                 * dateRange 文物年代
+                 * dateRange 文物年代范围
                  */
                 data:'/relic/timeline',
         },
