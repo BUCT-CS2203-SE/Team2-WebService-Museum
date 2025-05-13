@@ -10,7 +10,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Data
-
 public class Art {
     private Long id;
     private String Classifications;
