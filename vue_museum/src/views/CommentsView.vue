@@ -61,27 +61,44 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted,defineProps } from 'vue'
 import { useRouter } from 'vue-router'
-import {  Comment as AComment} from 'ant-design-vue'
+import {  Comment as AComment, message} from 'ant-design-vue'
+import { getComments,AddComments } from '@/api/relicComments'
+import Api from '@/api/Api'
 
 const router = useRouter()
 function goBack() { router.back() }
 
-const relic = reactive({ id: 1, name: '千年青铜镜' })
-const user = reactive({ avatar: '' })
+//已知文物ID
+const props = defineProps({
+  id: { type: Number, required: true }
+})
+
+const relic = reactive({ id: props.id, name: '千年青铜镜' })  //文物信息
+const user = reactive({ avatar: require("../assets/user_default500x500.png") }) //用户头像url,考虑在前端保存
 const comments = ref([
-  { id: 1, author: '张三', avatar: '', content: '非常精美！', datetime: '2025-05-10 14:32' },
-  { id: 2, author: '李四', avatar: '', content: '请问出土地点？', datetime: '2025-05-11 09:15' },
+  {  author: '张三', avatar: '', content: '非常精美！', datetime: '2025-05-10 14:32' },
+  {  author: '李四', avatar: '', content: '请问出土地点？', datetime: '2025-05-11 09:15' },
   /* …更多评论… */
 ])
 
+/**1：  添加新评论 */
 const newComment = ref('')
-function addComment() {
+async function addComment() {
   const txt = newComment.value.trim()
-  if (!txt) return
+  if (!txt) return;
+  try{
+    const apply = await AddComments(Api.url.comments.add_comments,{
+      username: localStorage.getItem('username'),
+      id: props.id,
+      contents: txt,
+      datetime: new Date().toLocaleString()
+    })
+    if(!apply) return;
+  }catch(error) {message.error(error);}
   comments.value.unshift({
-    id: Date.now(),
+    // id: Date.now(),
     author: '游客',
     avatar: '',
     content: txt,
@@ -89,6 +106,22 @@ function addComment() {
   })
   newComment.value = ''
 }
+
+const response = ref({
+  name: '文物名称',
+  comments: [{author:'用户名',avatar: '头像url',content:'评论详情',datetime:'评论时间'}]
+})
+
+/**2：  加载评论区数据 */
+onMounted(async () =>{
+  try{
+    response.value = await getComments(Api.url.comments.comments,{
+      id:props.id
+    });
+  }catch(error){
+    message.error(error);
+  }
+})
 </script>
 
 <style scoped>

@@ -32,11 +32,11 @@ import SelectInput from '@/components/SelectInput.vue';
 import InputButton from '@/components/InputButton.vue';
 import SmoothButton from '@/components/SmoothButton.vue';
 import PageController from '@/components/PageController.vue';
-import { getcatasETcList } from '@/api/SearchRelic';
+import { getcatasETcList,SearchRelic } from '@/api/SearchRelic';
 import Api from '@/api/Api';
 import { message } from 'ant-design-vue';
 
-// 这里的数组元素个数为8，本地得使用require
+// 卡片数据，之后可被直接代替，这里的数组元素个数为8，本地得使用require
 const relics = ref([
   {id: 1, src: require("../assets/logo.png"),  title: '文物标题 A' },
   {id: 2, src: "https://www.njmuseum.com/files/nb/collection/modify/2021/09/28/5%EF%BC%9A3419-B-01.jpg", title: '文物标题 B' },
@@ -53,20 +53,40 @@ const sendInfo = reactive({
   type:null,      //文物类型
   time:null,      //文物时代
   museum: null,   //博物馆
-  sortby:null,    //排序方式,null按iD，1按名称，2按年代
-  name: null,     //按名称模糊查询
-  artist: null    //按作家查询
+  sortby:null,    //排序方式,null按ID，1按名称，2按年代
+  name: null,     //按文物名称模糊查询
+  artist: null,    //按作家查询
+  pageindex: 1,   //页码号
+  pagesize:8      //页大小
 })
-
-function Onclick(){
+const response = ref({
+  total:2,
+  data:[  {id: 7, src: require("../assets/logo.png"),  title: '文物标题 A' },
+        {id: 8, src: "../assets/logo.png",  title: '文物标题 A' }],
+})
+/**请求函数 */
+async function Onclick(){
   console.log("Button was Clicked   "+sendInfo.sortby);
+  try{
+    response.value = await SearchRelic(Api.url.relic.search,sendInfo);
+    relics.value = response.value.data;
+    total.value = response.value.total;
+    nowpage.value = sendInfo.pageindex; 
+  }catch(error){
+    message.error("请求列表失败!");
+  }
 }
-const total = ref('100'); //
-const nowpage = ref(1);
+const total = ref('100'); //总项目数
+const nowpage = ref(2);
 //页面切换逻辑
 watch(nowpage, (newval, oldval) => {
   console.log('旧值：', oldval, '新值：', newval);
+  if(sendInfo.pageindex !== newval){
+    sendInfo.pageindex = newval;
+    Onclick();
+  }
 })
+
 const catas = ref([{ value: 'null', label: '全部' }]);//种类
 const dynasty = ref([{ value: 'null', label: '全部' }]);//朝代信息
 const museum = ref([{ value: 'null', label: '全部' }]);//博物馆名
