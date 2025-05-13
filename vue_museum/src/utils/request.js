@@ -14,7 +14,8 @@ export default service;
 // 请求拦截器
 service.interceptors.request.use(
     config => {
-      console.log("Now Fecting Url = "+config.url);
+      /**调试用 */
+      console.log("Now Fecting Url = "+config.url+" --With Data: "+JSON.stringify(config.data));
       // 登录接口不附带 Authorization 头
       if (config.url.endsWith('/login')) {
         return config;
