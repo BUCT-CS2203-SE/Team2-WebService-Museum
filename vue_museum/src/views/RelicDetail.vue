@@ -42,7 +42,9 @@
     <div class="detailinfo-box">
       <div class="detail-info">
         <h2 class="info-title">{{ relic.name }}</h2>
-        <p class="info-era">年代：{{ relic.era }}</p>
+        <p v-if="relic.era" class="info-era">年代：{{ relic.era }}</p>
+        <p v-if="relic.atrist" class="info-era">作家： {{ relic.atrist }}</p>
+        <p v-if="relic.scale" class="info-era">规模参数： {{ relic.scale }}</p>
         <div class="info-desc">
           <h3>详细介绍</h3>
           <p>{{ relic.description }}</p>
@@ -52,7 +54,7 @@
       <div class="icon-box">
         <div class="icon-item" @click="onFavorite">
           <StarFilled
-            v-if="fav"
+            v-if="relic.favorited"
             class="icon"
             style="color: #409eff;"
           />
@@ -72,18 +74,19 @@
 
   <div class="associate">
     <span class="associate-title">相关推荐</span>
-    <div class="associate-list">
-      <a
-        v-for="(item, idx) in relatedItems"
-        :key="idx"
-        :href="item.link"
-        class="associate-item"
-        target="_blank"
-        rel="noopener"
-      >
-        {{ item.text }}
-      </a>
+    <div v-if="relatedItems.length" class="associate-list">
+      <router-link
+          v-for="(item, idx) in relatedItems" :key="idx"
+          class="associate-item"
+          :to="{
+            name: 'RelicDetail',
+            query: { id: item.id }
+          }"
+        >
+        {{ item.name }}
+      </router-link>
     </div>
+    <div v-else class="associate-list">暂无</div>
   </div>
 
   <!-- 放大镜模态层 -->
@@ -121,7 +124,6 @@ const props = defineProps({
 
 // 模拟获取多张图，真实项目从后端请求
 const relic = ref({
-  id: props.id,
   images: [
     require('@/assets/logo.png'),
     require('@/assets/logo.png'),
@@ -131,8 +133,10 @@ const relic = ref({
   ],
   name: '文物名称',
   era: '唐代',
+  atrist: '齐白石',
+  scale: '长3米宽2米',
   description:'文物描述具体信息',
-  favorited:false
+  favorited:true
 })
 
 const images = relic.value.images
@@ -196,11 +200,17 @@ const zoomStyle = computed(() => ({
   cursor: zoomState.dragging ? 'grabbing' : 'grab'
 }))
 
-const fav = ref(relic.value.favorited); //是否收藏
-// 处理点击
-function onFavorite() {
-  fav.value = !fav.value;
-  console.log('点击收藏:- '+fav.value)
+// 1： 处理点击，上报收藏状态
+async function onFavorite() {
+  console.log('点击收藏:- '+relic.value.favorited)
+  try{
+    const ans = await isFavorite(Api.url.relic.isFav,{
+      id:props.id,username:localStorage.getItem('username'),fav:!relic.value.favorited
+    });
+    if(ans) relic.value.favorited = !relic.value.favorited;
+  }catch(error){
+    message.error("出现异常 "+message);
+  }
 }
 //跳转评论区
 function onComment() {
@@ -212,15 +222,34 @@ function onComment() {
 }
 
 // 示例数组，真实场景可在 onMounted 中通过接口拉取
-const relatedItems = ref([])
-onMounted(() => {
-  // 模拟后端数据：text 为显示文字，link 为跳转链接
-  relatedItems.value = [
-    { text: '青铜器', link: '/search?type=bronze' },
-    { text: '陶瓷',   link: '/search?type=ceramics' },
-    { text: '书画',   link: '/search?type=painting' },
-    { text: '玉器',   link: '/search?type=jade' }
-  ]
+const relatedItems = ref([{name:"四羊方尊",id:100}]) //相关文物
+
+/**响应数据结构体 */
+const response = ref({
+  name: '名称',
+  images: [],
+  era: '时代',
+  atrist: '作家',
+  scale: '规模',
+  description: '描述',
+  favorited: false, //收藏
+  related: [{
+    name:'名称',
+    id: 12
+  }]  //相关文物信息
+})
+
+import { getDetail,isFavorite } from '@/api/relicDetail'
+import Api from '@/api/Api'
+import { message } from 'ant-design-vue'
+
+/**2： 暂时写到这，此处还需要赋值 */
+onMounted(async () => {
+  try {
+    response.value = await getDetail(Api.url.relic.detail,{id:props.id,username:localStorage.getItem('username')});
+  } catch (error) {
+    message.error("获取文物具体信息失败!");
+  }
 })
 </script>
 
