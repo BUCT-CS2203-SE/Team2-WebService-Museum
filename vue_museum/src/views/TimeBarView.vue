@@ -61,7 +61,7 @@ const generateMockData = () => {
     imageUrl: `https://picsum.photos/300/200?random=${i}`, // 使用随机图片
     name: ` ${relics[i % relics.length]}`,
     dynasty: dynasties[i % dynasties.length],
-    dateRange: `约${900 + i * 100}-${1000 + i * 100}年`
+    dateRange: `约${900 + i%4 * 100}-${1000 + i%4 * 100}年`
 
   }));
 };
@@ -110,13 +110,23 @@ const checkScrollPosition = () => {
      // 修改3: 直接使用Mock数据而不是axios请求
      const mockData = generateMockData();
      console.log(api.url.relic.timeline.data);
-     itemList.value = mockData.map(item => ({
-       id: item.id,
-       imgUrl: item.imageUrl,
-       title: item.name,
-       date: `(${item.dateRange})`,
-       dynasty: item.dynasty,
-     }));
+     const uniqueItems = [];
+     const seenTimeRanges = new Set();
+     mockData.forEach(item => {
+      const timeRange = item.dateRange; // 假设文物数据中包含dateRange属性
+      if (!seenTimeRanges.has(timeRange)) {
+        seenTimeRanges.add(timeRange);
+        uniqueItems.push({
+          id: item.id,
+          imgUrl: item.imageUrl,
+          title: item.name,
+          date: `(${item.dateRange})`,
+          dynasty: item.dynasty,
+        });
+      }
+    });
+    
+    itemList.value = uniqueItems;
     
      // 修改4: 添加延迟模拟网络请求
      await new Promise(resolve => setTimeout(resolve, 500));
@@ -130,19 +140,29 @@ const checkScrollPosition = () => {
  };
 //以上是测试，正式使用时删除
 
-// //获取时间轴数据，正式使用时取消注释
+//获取时间轴数据，正式使用时取消注释,这里做出了修改，如果同一时间范围中出现多个文物，只显示其中一个
 // const fetchTimelineData = async () => {
 //   try {
 //     loading.value = true;
 //     error.value = null;
-//     const response = await axios.get(api.url.relic.timeline.data);     
-//     itemList.value = response.data.map(item => ({
-//       id: item.id,
-//       imgUrl: item.imageUrl,
-//       title: item.name,
-//       date: `(${item.dateRange})`,
-//       dynasty: item.dynasty,
-//     }));
+//     const response = await axios.get(api.url.relic.timeline.data); 
+//     const uniqueItems = [];
+//     const seenTimeRanges = new Set();    
+    //  response.data.forEach(item => {
+    //   const timeRange = item.dateRange; // 假设文物数据中包含dateRange属性
+    //   if (!seenTimeRanges.has(timeRange)) {
+    //     seenTimeRanges.add(timeRange);
+    //     uniqueItems.push({
+    //       id: item.id,
+    //       imgUrl: item.imageUrl,
+    //       title: item.name,
+    //       date: `(${item.dateRange})`,
+    //       dynasty: item.dynasty,
+    //     });
+    //   }
+    // });
+
+    // itemList.value = uniqueItems;
 //   } catch (err) {
     
 //     error.value = err.response?.data?.message || err.message;
