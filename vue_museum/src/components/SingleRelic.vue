@@ -19,7 +19,11 @@ import { ref, watch, defineProps } from 'vue'
 import logo from '@/assets/logo.png'
 import { useRouter } from 'vue-router'
 import { message } from 'ant-design-vue'
-
+/**组件传入参数
+ * id 文物id
+ * src 图片链接
+ * title 文明名
+ */
 const props = defineProps({
   id:  { type: Number, required: true },
   src: { type: String, required: true },

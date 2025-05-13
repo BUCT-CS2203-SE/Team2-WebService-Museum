@@ -40,7 +40,7 @@ import { message } from 'ant-design-vue';
 const relics = ref([
   {id: 1, src: require("../assets/logo.png"),  title: '文物标题 A' },
   {id: 2, src: "https://www.njmuseum.com/files/nb/collection/modify/2021/09/28/5%EF%BC%9A3419-B-01.jpg", title: '文物标题 B' },
-  {id: 3, src: require("../assets/logo.png"),  title: '文物标题 A' },
+  {id: 3, src: require("../assets/photo_default586x426.png"),  title: '文物标题 A' },
   {id: 4, src: require("../assets/logo.png"),  title: '文物标题 A' },
   {id: 5, src: require("../assets/logo.png"),  title: '文物标题 A' },
   {id: 6, src: require("../assets/logo.png"),  title: '文物标题 A' },
