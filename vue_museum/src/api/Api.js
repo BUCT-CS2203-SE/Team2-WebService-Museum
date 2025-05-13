@@ -14,12 +14,7 @@ export default {
         forget: '/forget',
         /**获取邮箱验证码 OK*/
         getCode: '/getCode',
-        /**获取文物信息 OK**/
-        getWenWu: '/getWenWu',
-        /**获取当前用户信息 OK**/
-        getUserInfo: '/getUserInfo',
-        /**修改用户信息 OK**/
-        changeUserInfo: '/changeUserInfo',
+
         /**以下是后端需要返回数据的路径(''之间是路径),后端负责人完成后将这里的信息标注为OK */
         relic: {
             /**get 请求参数：无，需要返回文物的所有类别如瓷器等，返回类型list */

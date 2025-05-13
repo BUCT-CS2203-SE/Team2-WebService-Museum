@@ -4,10 +4,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.museum.mapper.ArtMapper;
-import com.example.museum.model.Art;
-@GetMapping("/relic")
+
+@RestController
+@RequestMapping("/test")
+@ResponseBody
 public class ArtController {
     private final ArtMapper artMapper;
 
@@ -15,10 +20,6 @@ public class ArtController {
         this.artMapper = artMapper;
     }
 
-    @GetMapping("/getWenWu")
-    public List<Art> getAll() {
-        return artMapper.findAll();
-    }
 
     @GetMapping("/relic_types")
     public List<String> getAllClassifications() {

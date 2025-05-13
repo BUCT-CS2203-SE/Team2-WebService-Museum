@@ -2,24 +2,14 @@ package com.example.museum.mapper;
 
 
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 import java.util.Map;
 
-import com.example.museum.model.Art;
 
 @Mapper
 public interface ArtMapper {
-    
-    //List<Art> findAllArts();  
-    
-    // List<Art> find
-    // Art findByid(@Param("id") Long id);
-    
-    @Select("SELECT * FROM art")
-    List<Art> findAll();
 
     // 获取所有文物类别（去重）
     @Select("SELECT DISTINCT Classifications FROM art")
