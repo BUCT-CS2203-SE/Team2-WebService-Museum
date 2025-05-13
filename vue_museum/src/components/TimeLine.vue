@@ -5,7 +5,7 @@
     <div class="timeline" ref="timeline">
       <div class="timeline-item" v-for="(item, index) in props.items" :key="index" @click="current = index"
            :style="{marginLeft: index!==0? `-${60}px`: '20px'}">
-        <div class="card-top" v-if="index%2 === 0" :class="index===current ? 'card-active' : ''">
+        <div class="card-top" v-if="index%2 === 0" :class="index===current ? 'card-active' : ''" @click="index === current && onCardClick(item.date)">
           <img :src="item.imgUrl" alt="" style="width: 90px;height:90px;border-radius: 8px;">
           <div class="content">
             <div>{{ item.title }}</div>
@@ -19,7 +19,7 @@
         <div class="cirque" :class="index===current ? 'active' : ''">
           <div class="dot"></div>
         </div>
-        <div class="card-bottom" v-if="index%2 !== 0" :class="index===current ? 'card-active' : ''">
+        <div class="card-bottom" v-if="index%2 !== 0" :class="index===current ? 'card-active' : ''" @click="index === current && onCardClick(item.date)">
           <img :src="item.imgUrl" alt="" style="width: 90px;height:90px;border-radius: 8px;">
           <div class="content">
             <div>{{ item.title }}</div>
@@ -41,6 +41,7 @@
 import {computed, ref} from "vue";
 import {LeftCircleOutlined, RightCircleOutlined} from "@ant-design/icons-vue";
 import {defineProps} from "vue";
+
 const props = defineProps({
   items: {
     type: Array,
@@ -88,8 +89,16 @@ const isFirst = computed(() => {
 const isLast = computed(() => {
   return current.value === props.items.length - 1;
 });
-
-
+/**跳转到时间跨度详情 */
+import router from "@/router";
+function onCardClick(time){
+  const [start, end] = time.match(/\d+/g).map(Number);
+  console.log("dianji sta: "+start + " end: "+end);
+  router.push({
+    name: 'timebar-time',
+    query: { sta: start, end: end }
+  })
+}
 </script>
 
 <style scoped>

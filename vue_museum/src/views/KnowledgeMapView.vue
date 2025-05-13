@@ -104,11 +104,6 @@ const stabilize = () => {
   margin-top: 20px;
 }
 
-/* //.myDiv {
-//  width: 100%;
-//  //height: 800px;
-//  position: relative;
-//} */
 
 textarea {
   width: 100%;

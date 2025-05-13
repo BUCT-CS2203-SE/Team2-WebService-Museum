@@ -22,7 +22,16 @@ const routes = [
     path: '/timebar',
     name: 'timebar',
     component: () => import('../views/TimeBarView.vue'),
-    meta: {public:true, hasNav: true}
+    meta: {public:true, hasNav: true},
+  },{
+    path: '/timebar-time',
+    name: 'timebar-time',
+    component: () => import('../views/TimeQueryView.vue'),
+    props: (route) => ({
+      sta: Number(route.query.sta),
+      end: Number(route.query.end)
+    }),
+    meta: { public: true, hasNav: true }
   },{
     path: '/knowledgemap',
     name: 'knowledgemap',
@@ -38,6 +47,14 @@ const routes = [
     name: 'RelicDetail',
     component: () => import('../views/RelicDetail.vue'),
     // 将 query.id 转成数字后，作为组件的 props.id
+    props: (route) => ({
+      id: Number(route.query.id)
+    }),
+    meta: {public:true, hasNav: true}
+  },{
+    path:'/comments',
+    name: 'Comments',
+    component: () => import('../views/CommentsView.vue'),
     props: (route) => ({
       id: Number(route.query.id)
     }),
