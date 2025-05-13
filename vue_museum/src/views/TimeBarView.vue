@@ -61,7 +61,7 @@ const generateMockData = () => {
     imageUrl: `https://picsum.photos/300/200?random=${i}`, // 使用随机图片
     name: ` ${relics[i % relics.length]}`,
     dynasty: dynasties[i % dynasties.length],
-    dateRange: `约${1000 + i * 100}-${900 + i * 100}年`
+    dateRange: `约${900 + i * 100}-${1000 + i * 100}年`
 
   }));
 };

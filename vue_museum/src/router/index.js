@@ -22,7 +22,16 @@ const routes = [
     path: '/timebar',
     name: 'timebar',
     component: () => import('../views/TimeBarView.vue'),
-    meta: {public:true, hasNav: true}
+    meta: {public:true, hasNav: true},
+  },{
+    path: '/timebar-time',
+    name: 'timebar-time',
+    component: () => import('../views/TimeQueryView.vue'),
+    props: (route) => ({
+      sta: Number(route.query.sta),
+      end: Number(route.query.end)
+    }),
+    meta: { public: true, hasNav: true }
   },{
     path: '/knowledgemap',
     name: 'knowledgemap',
