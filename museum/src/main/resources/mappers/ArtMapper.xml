@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 绑定到指定接口 -->        
+<mapper namespace="com.example.museum.mapper.ArtMapper">
+    <!-- 结果映射,前者为数据库表列名,后者为实体类属性 -->
+    <resultMap id="ResultMap" type="com.example.museum.model.Art">
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="Classifications" jdbcType="VARCHAR" property="Classifications"/>
+        <result column="Artist" jdbcType="VARCHAR" property="Artist"/>
+        <result column="Description" jdbcType="VARCHAR" property="Description"/>
+        <result column="Credit" jdbcType="VARCHAR" property="Credit"/>
+        <result column="Materials" jdbcType="VARCHAR" property="Materials"/>
+        <result column="Dimensions" jdbcType="VARCHAR" property="Dimensions"/>
+        <result column="Dynasty" jdbcType="VARCHAR" property="Dynasty"/>
+        <result column="Title" jdbcType="VARCHAR" property="Title"/>
+        <result column="ImgUrl" jdbcType="VARCHAR" property="ImgUrl"/>
+    </resultMap>
+    <!-- ID需要与接口中定义的方法名一致 -->
+    <!-- <select id="findAllArts" resultType="Art" resultMap="ResultMap">
+        SELECT *
+        FROM art
+    </select>
+    <select id = "findByid" resultMap = "ResultMap">
+        select id,Classifications 
+        from art 
+        where id = #{id}
+    </select> -->
+    </mapper>
