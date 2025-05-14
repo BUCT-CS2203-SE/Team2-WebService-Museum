@@ -148,19 +148,22 @@ const checkScrollPosition = () => {
 //     const response = await axios.get(api.url.relic.timeline.data); 
 //     const uniqueItems = [];
 //     const seenTimeRanges = new Set();    
-    //  response.data.forEach(item => {
-    //   const timeRange = item.dateRange; // 假设文物数据中包含dateRange属性
-    //   if (!seenTimeRanges.has(timeRange)) {
-    //     seenTimeRanges.add(timeRange);
-    //     uniqueItems.push({
-    //       id: item.id,
-    //       imgUrl: item.imageUrl,
-    //       title: item.name,
-    //       date: `(${item.dateRange})`,
-    //       dynasty: item.dynasty,
-    //     });
-    //   }
-    // });
+//      response.data.forEach(item => {
+//       const timeRange = item.dateRange; // 假设文物数据中包含dateRange属性
+//       if (!seenTimeRanges.has(timeRange)) {
+//         seenTimeRanges.add(timeRange);
+//         uniqueItems.push({
+//           id: item.id,
+//           imgUrl: item.imageUrl,
+//           title: item.name,
+//           date: `(${item.dateRange})`,
+//           dynasty: item.dynasty,
+
+
+
+//         });
+//       }
+//     });
 
     // itemList.value = uniqueItems;
 //   } catch (err) {
