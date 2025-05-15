@@ -11,9 +11,11 @@ import javax.sql.DataSource;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.example.museum.dto.CommentDTO;
 import com.example.museum.dto.RelicSearchDTO;
 import com.example.museum.mapper.AppUserMapper;
 import com.example.museum.mapper.ArtMapper;
+import com.example.museum.mapper.CommentsMapper;
 import com.example.museum.mapper.RelicSearchMapper;
 import com.example.museum.mapper.VerificationCodeMapper;
 import com.example.museum.model.AppUser;
@@ -96,18 +98,28 @@ public class MyTest {
     //     System.out.println("Email Test Over");
     // }
 
+    // @Autowired
+    // private RelicSearchMapper rsmp;
+    // @Test
+    // void asd(){
+    //     // DetailVO ans = rsmp.getDetailInfo(2L);
+    //     // System.out.println("Get Info: "+ans);
+    //     // ObjectMapper mapper = new ObjectMapper();
+    //     // Map<String,Object> map = mapper.convertValue(ans, new TypeReference<>(){});
+    //     // System.out.println(map);
+    //     ArrayList<Object> li = new ArrayList<>(rsmp.getRelatedRelic(1L));
+    //     for(Object i : li){System.out.println(i.toString());}
+    //     // Boolean an = rsmp.delFavRelic(1L, 1L);
+    //     // System.out.println(an);
+    // }
+
     @Autowired
-    private RelicSearchMapper rsmp;
+    private CommentsMapper cmmp;
     @Test
-    void asd(){
-        // DetailVO ans = rsmp.getDetailInfo(2L);
-        // System.out.println("Get Info: "+ans);
-        // ObjectMapper mapper = new ObjectMapper();
-        // Map<String,Object> map = mapper.convertValue(ans, new TypeReference<>(){});
-        // System.out.println(map);
-        ArrayList<Object> li = new ArrayList<>(rsmp.getRelatedRelic(1L));
-        for(Object i : li){System.out.println(i.toString());}
-        // Boolean an = rsmp.delFavRelic(1L, 1L);
-        // System.out.println(an);
+    void asdq(){
+        System.out.println("ANS: "+cmmp.getCommentByRelicId(2L));
+        // CommentDTO dto = new CommentDTO(1L, "test", "Nice!", LocalDateTime.now());
+        // Boolean an = cmmp.addComments(dto);
+        // System.out.println("Ans: "+an);
     }
 }   
