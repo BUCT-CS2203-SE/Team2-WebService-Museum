@@ -39,7 +39,7 @@ public class ArtController {
 
     @GetMapping("/relic_museums")
     public List<String> getAllMuseums() {
-        return null;
+        return List.of("大英博物馆");
     }
 
     @GetMapping("/timeline")
