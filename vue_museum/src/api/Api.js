@@ -17,12 +17,12 @@ export default {
 
         /**以下是后端需要返回数据的路径(''之间是路径),后端负责人完成后将这里的信息标注为OK */
         relic: {
-            /**get 请求参数：无，需要返回文物的所有类别如瓷器等，返回类型list */
-            types: '/relic/relic_types',
-            /**get 请求参数：无，需要返回文物朝代信息，如新石器时代、宋代等，返回类别list */
-            times: '/relic/relic_times',
-            /**get 请求参数：无，需要返回文物现所在博物馆信息，如大英博物馆，返回类别list */
-            museums: '/relic/relic_museums',
+            /**get 请求参数：无，需要返回文物的所有类别如瓷器等，返回类型list OK*/
+            types: '/test/relic_types',
+            /**get 请求参数：无，需要返回文物朝代信息，如新石器时代、宋代等，返回类别list OK*/
+            times: '/test/relic_times',
+            /**get 请求参数：无，需要返回文物现所在博物馆信息，如大英博物馆，返回类别list OK*/
+            museums: '/test/relic_museums',
 
             /**post 请求参数以下：
              *  类型map
@@ -42,15 +42,18 @@ export default {
              *  src 网络加载路径
              *  title 文物名
              * }        文物数据
-             */
-            search: '/relic/relic_search',
+             OK*/
+            search: '/test/relic_search',
 
             /**post 请求参数：{id 文物id, username 用户名}
              * @return 返回数据结构
              * @type map
              * name         文物名称
              * images[]     图片列表
+             * credit       题词信息
              * era:         文物时间
+             * type:        文物类别
+             * material:    材料
              * atrist       作家
              * scale:       文物规格
              * description  文字描述
@@ -60,13 +63,13 @@ export default {
              *    name  文物名称
              *    id    文物ID
              *  }
-              */
-            detail: '/relic/relic_detail',
+              OK*/
+            detail: '/test/relic_detail',
 
             /**post 请求参数：{id 文物id, username 用户名, fav bool值表示是否收藏}
              * @return 无
-            */
-            isFav: '/relic/relic_isfav',
+            OK*/
+            isFav: '/test/relic_isfav',
 
 
             /**时间轴界面Api要求，完成后标注0K*/
