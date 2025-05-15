@@ -465,15 +465,6 @@ button:hover {
   background-color: #e0e0e0;
 }
 
-//.graph {
-//  /* 设置元素底部的外边距为10像素 */
-//  margin-bottom: 10px;
-//  align-self: flex-end;
-//  /* 将 div 放置在右侧 */
-//  margin-right: 10px;
-//  display: inline-block;
-//}
-
 select {
   margin: 0 5px;
   /* 左右间距改为水平方向的间距 */

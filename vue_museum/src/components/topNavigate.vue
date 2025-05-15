@@ -1,6 +1,5 @@
 <!-- 顶部导航栏组件 -->
 <template>
-
   <div class="topnav">
     <div class="box1">
       海外文物知识服务子系统
@@ -26,6 +25,10 @@
         <ul><router-link class="nav-link" active-class="active" to="/userinfo">用户信息</router-link></ul>
         <span class="aline"></span>
       </div>
+      <div class="box3">
+        <ul><router-link class="nav-link" active-class="active" to="/tologout">注销</router-link></ul>
+        <span class="aline"></span>
+      </div>
     </div>
   </div>
 </template>
@@ -33,26 +36,32 @@
 <style scoped>
 .topnav {
   padding: 0px 10px;
-  background-color: #a4fcd4;
+  //background-color: #a4fcd4;
+  background-color: rgb(17, 17, 17);
   position: relative;
-  height: 60px;
+  height: 80px;
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 2fr;
   align-items: center;
   font-size: large;
   gap: 80px;
+
+  top: 0;          /* 固定在页面顶部 */
+  z-index: 9999;   /* 确保在最上层 */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* 添加阴影 */
 }
 .topnav .box1{
   font-size: larger;
   position: relative;
   text-align: center;
   letter-spacing: 10px;
+  color: #ffffff;
 }
 .topnav .box2{
   display: grid;
   height: inherit;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
   padding: 0px 48px;
   gap: 8px;
 }
@@ -70,9 +79,11 @@
 }
 .box3 a{
   text-decoration: none;
-  font-style: none;
-  color: black;
+  //font-style: none;
+  //color: black;
+  color: #FFFFFF;
   padding: 6px;
+
 }
 .box3 .aline{
   position: absolute;
@@ -94,3 +105,5 @@
 }
 
 </style>
+<script setup>
+</script>
