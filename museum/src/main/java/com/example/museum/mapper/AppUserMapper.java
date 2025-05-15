@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import com.example.museum.model.AppUser;
 
@@ -31,4 +32,7 @@ public interface AppUserMapper {
      */
     @Delete("delete from app_user where id = #{id}")
     int deleteById(@Param("id") Long id);
+
+    @Select("select id from app_user where account = #{ac}")
+    Long getIdByAccount(@Param("ac") String account);
 }

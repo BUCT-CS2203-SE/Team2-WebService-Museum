@@ -15,8 +15,8 @@ public interface ArtMapper {
     @Select("SELECT DISTINCT Classifications FROM art")
     List<String> findAllClassifications();
 
-    // 获取所有朝代（去重）
-    @Select("SELECT DISTINCT Dynasty FROM art")
+    // 获取所有朝代（去重，去空）
+    @Select("SELECT DISTINCT Dynasty FROM art WHERE Dynasty IS NOT NULL AND Dynasty != ''")
     List<String> findAllDynasty();
 
     // 获取所有博物馆（去重）?

@@ -6,7 +6,7 @@
     <SelectInput v-model="sendInfo.sortby" name="排序方式" :options="sortBy"/>
     <InputButton placeholder="文物名称：" v-model="sendInfo.name" />
     <InputButton placeholder="作家名称：" style="margin-left: -25px;" v-model="sendInfo.artist" />
-    <SmoothButton label="查询" @click="Onclick" />
+    <SmoothButton label="查询" @click="Onclick(1)" />
   </div>
 
   <div class="gallery">
@@ -40,12 +40,12 @@ import { message } from 'ant-design-vue';
 const relics = ref([
   {id: 1, src: require("../assets/logo.png"),  title: '文物标题 A' },
   {id: 2, src: "https://www.njmuseum.com/files/nb/collection/modify/2021/09/28/5%EF%BC%9A3419-B-01.jpg", title: '文物标题 B' },
-  {id: 3, src: require("../assets/photo_default586x426.png"),  title: '文物标题 A' },
+  {id: 3, src: "/img/photo/user_default500x500.png",  title: '文物标题 A' },
   {id: 4, src: require("../assets/logo.png"),  title: '文物标题 A' },
   {id: 5, src: require("../assets/logo.png"),  title: '文物标题 A' },
   {id: 6, src: require("../assets/logo.png"),  title: '文物标题 A' },
   {id: 7, src: require("../assets/logo.png"),  title: '文物标题 A' },
-  {id: 8, src: "../assets/logo.png",  title: '文物标题 A' },
+  {id: 8, src: require("../assets/logo.png"),  title: '文物标题 A' },
 ]);
 
 /**需要发送的结构体 */
@@ -65,9 +65,10 @@ const response = ref({
         {id: 8, src: "../assets/logo.png",  title: '文物标题 A' }],
 })
 /**请求函数 */
-async function Onclick(){
+async function Onclick(val){
   console.log("Button was Clicked   "+sendInfo.sortby);
   try{
+    sendInfo.pageindex = val; //每次点击查询回到第一页
     response.value = await SearchRelic(Api.url.relic.search,sendInfo);
     relics.value = response.value.data;
     total.value = response.value.total;
@@ -83,7 +84,7 @@ watch(nowpage, (newval, oldval) => {
   console.log('旧值：', oldval, '新值：', newval);
   if(sendInfo.pageindex !== newval){
     sendInfo.pageindex = newval;
-    Onclick();
+    Onclick(newval);
   }
 })
 
@@ -103,6 +104,7 @@ onMounted(async () => {
     catas.value = await getcatasETcList(Api.url.relic.types);
     dynasty.value = await getcatasETcList(Api.url.relic.times);
     museum.value = await getcatasETcList(Api.url.relic.museums);
+    Onclick(1);
   } catch (error) {
     message.error(error);
   }

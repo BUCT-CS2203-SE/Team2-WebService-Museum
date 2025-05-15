@@ -18,7 +18,7 @@ export async function getDetail(url, params) {
     }).catch(error => {
         console.error("获取文物具体信息失败:", error);
         message.error("获取文物具体信息失败");
-        return {};
+        throw error("请求失败")
     });
 }
 /**上传收藏信息 */
@@ -28,7 +28,7 @@ export async function isFavorite(url, params) {
         method: 'post',
         data:params
     }).then(response => {
-        if(response.status !== 200)
+        if(response.status !== 200 || response.data.ans !== true)
             throw new Error("响应异常");
         return true;
     }).catch(error => {

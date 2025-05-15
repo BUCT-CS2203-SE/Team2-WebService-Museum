@@ -42,12 +42,12 @@ service.interceptors.request.use(
     },
     error => {
       // 对响应错误做点什么
-      if (error.response?.status === 401) {
-        // 跳登录页、清 Token 等
-        window.location.hash = '/login';
-        localStorage.removeItem('jwt');
-        console.log("响应拦截器重定向至登录页");
-      }
+      // if (error.response?.status === 401) {
+      //   // 跳登录页、清 Token 等
+      //   window.location.hash = '/login';
+      //   localStorage.removeItem('jwt');
+      //   console.log("响应拦截器重定向至登录页");
+      // }
       console.log("响应出错: "+JSON.stringify(error.response.data));
       return error.response;
     }

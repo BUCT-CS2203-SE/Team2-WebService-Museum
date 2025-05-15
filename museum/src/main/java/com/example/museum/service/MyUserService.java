@@ -39,4 +39,10 @@ public interface MyUserService extends UserDetailsService {
      * @return true / false
      */
     Boolean updateOneUser(AppUser user);
+    /**
+     * 通过账号名，查找用户id
+     * @param account 账号名
+     * @return Long
+     */
+    Long getIdByAccount(String account);
 }

@@ -63,4 +63,8 @@ public class MyUserServiceImpl implements MyUserService {
     public Boolean updateOneUser(AppUser user){
         return userMapper.updateOneUser(user) == 1;
     }
+    @Override
+    public Long getIdByAccount(String account){
+        return userMapper.getIdByAccount(account);
+    }
 }
