@@ -76,7 +76,7 @@ const props = defineProps({
 })
 
 const relic = reactive({ id: props.id, name: '千年青铜镜' })  //文物信息
-const user = reactive({ avatar: require("../assets/user_default500x500.png") }) //用户头像url,考虑在前端保存
+const user = reactive({ avatar: '/img/photo/user_default500x500.png' }) //用户头像url,考虑在前端保存
 const comments = ref([
   {  author: '张三', avatar: '', content: '非常精美！', datetime: '2025-05-10 14:32' },
   {  author: '李四', avatar: '', content: '请问出土地点？', datetime: '2025-05-11 09:15' },

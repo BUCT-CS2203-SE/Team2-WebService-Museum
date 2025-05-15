@@ -25,12 +25,12 @@
       <button 
         class="carousel-btn right" 
         @click="nextImage" 
-        :disabled="currentIndex >= images.length - 1"
+        :disabled="currentIndex >= relic.images.length - 1"
       >›</button>
       <!-- 下方小圆点指示 -->
       <div class="dots">
         <span
-          v-for="(img, idx) in images"
+          v-for="(img, idx) in relic.images"
           :key="idx"
           :class="{ 'dot': true, active: idx === currentIndex }"
           @click="goTo(idx)"
@@ -43,7 +43,10 @@
       <div class="detail-info">
         <h2 class="info-title">{{ relic.name }}</h2>
         <p v-if="relic.era" class="info-era">年代：{{ relic.era }}</p>
+        <p v-if="relic.type" class="info-era">类别： {{ relic.type }}</p>
         <p v-if="relic.atrist" class="info-era">作家： {{ relic.atrist }}</p>
+        <p v-if="relic.credit" class="info-era">题词： {{ relic.credit }}</p>
+        <p v-if="relic.material" class="info-era">材料： {{ relic.material }}</p>
         <p v-if="relic.scale" class="info-era">规模参数： {{ relic.scale }}</p>
         <div class="info-desc">
           <h3>详细介绍</h3>
@@ -74,9 +77,9 @@
 
   <div class="associate">
     <span class="associate-title">相关推荐</span>
-    <div v-if="relatedItems.length" class="associate-list">
+    <div v-if="relic.related.length" class="associate-list">
       <router-link
-          v-for="(item, idx) in relatedItems" :key="idx"
+          v-for="(item, idx) in relic.related" :key="idx"
           class="associate-item"
           :to="{
             name: 'RelicDetail',
@@ -108,7 +111,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, defineProps,onMounted } from 'vue'
+import { ref,watch, reactive, computed, defineProps,onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { StarOutlined, StarFilled, MessageOutlined } from '@ant-design/icons-vue'
 
@@ -132,23 +135,29 @@ const relic = ref({
     "https://www.njmuseum.com/files/nb/collection/modify/2021/09/28/5%EF%BC%9A3419-B-01.jpg"
   ],
   name: '文物名称',
+  credit:'题词信息',
+  type: '文物类别',
   era: '唐代',
   atrist: '齐白石',
+  material: '材料',
   scale: '长3米宽2米',
   description:'文物描述具体信息',
-  favorited:true
+  favorited: true,
+  related: [{
+    name:"四羊方尊",
+    id:100
+  }]  //相关文物信息
 })
 
-const images = relic.value.images
 const currentIndex = ref(0)
-const currentImage = computed(() => images[currentIndex.value])
+const currentImage = computed(() => relic.value.images[currentIndex.value])
 
 // 图片切换函数
 function prevImage() {
   if (currentIndex.value > 0) currentIndex.value--
 }
 function nextImage() {
-  if (currentIndex.value < images.length - 1) currentIndex.value++
+  if (currentIndex.value < relic.value.images.length - 1) currentIndex.value++
 }
 function goTo(idx) {
   currentIndex.value = idx
@@ -205,7 +214,10 @@ async function onFavorite() {
   console.log('点击收藏:- '+relic.value.favorited)
   try{
     const ans = await isFavorite(Api.url.relic.isFav,{
-      id:props.id,username:localStorage.getItem('username'),fav:!relic.value.favorited
+      id:props.id,
+      // username:localStorage.getItem('username'),
+      username:"test",
+      fav:!relic.value.favorited,
     });
     if(ans) relic.value.favorited = !relic.value.favorited;
   }catch(error){
@@ -221,35 +233,25 @@ function onComment() {
   })
 }
 
-// 示例数组，真实场景可在 onMounted 中通过接口拉取
-const relatedItems = ref([{name:"四羊方尊",id:100}]) //相关文物
-
-/**响应数据结构体 */
-const response = ref({
-  name: '名称',
-  images: [],
-  era: '时代',
-  atrist: '作家',
-  scale: '规模',
-  description: '描述',
-  favorited: false, //收藏
-  related: [{
-    name:'名称',
-    id: 12
-  }]  //相关文物信息
-})
-
 import { getDetail,isFavorite } from '@/api/relicDetail'
 import Api from '@/api/Api'
 import { message } from 'ant-design-vue'
 
 /**2： 暂时写到这，此处还需要赋值 */
-onMounted(async () => {
+async function FetchData(){
   try {
-    response.value = await getDetail(Api.url.relic.detail,{id:props.id,username:localStorage.getItem('username')});
+    relic.value = await getDetail(Api.url.relic.detail,
+      {id:props.id,username:"test"});
+    // images.value = relic.value.images;
   } catch (error) {
     message.error("获取文物具体信息失败!");
-  }
+  }  
+}
+watch(() => props.id, () => {
+  FetchData(); // 监听 id 改变，重新请求数据
+});
+onMounted(async () => {
+    FetchData();
 })
 </script>
 
@@ -382,7 +384,7 @@ onMounted(async () => {
 
 /* 年代信息 */
 .detail-info .info-era {
-  margin: 0 0 24px;
+  margin: 0 0 8px;
   font-size: 1rem;
   font-style: italic;
   color: #666;
