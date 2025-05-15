@@ -67,7 +67,7 @@ export default {
             detail: '/test/relic_detail',
 
             /**post 请求参数：{id 文物id, username 用户名, fav bool值表示是否收藏}
-             * @return 无
+             * @return ans true/false
             OK*/
             isFav: '/test/relic_isfav',
 
@@ -130,15 +130,15 @@ export default {
             upgradeAvatar:"/user/upgradeAvatar",
             /**post 请求参数：用户名，更新用户头像
              * avatar    头像图片地址  string类型 例如：'http://xxx.com/xxx.jpg'
-
-        comments:{
+                */
+        },comments:{
             /**post 请求参数：{id   文物id}
              * @return 返回参数
              * @type map
              * name     文物名
              * comments[] 评论信息数组
              *      数组元素：{author '用户名',avatar  '头像url',content '评论详情',datetime  '评论时间'}
-             */
+             OK*/
             comments: '/comments/search',
             
             /**POST 添加评论
@@ -146,11 +146,10 @@ export default {
              * username     用户名
              * id           文物ID
              * contents     评论详情
-             * time         发表时间
+             * datetime         发表时间
              * }
-             * @return 无
-
-             */
+             * @return ans true/false
+             OK*/
             add_comments: '/comments/add',
         }
     }

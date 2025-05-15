@@ -14,6 +14,11 @@ export async function getComments(url, params) {
         if (!data || !Array.isArray(data.comments)) {
             throw new Error("响应数据格式不正确");
         }
+        data.comments.forEach(element => {
+            //替换为默认头像
+            if(element.avatar == null) element.avatar = '/img/photo/user_default500x500.png';
+            element.datetime = new Date(element.datetime).toLocaleString();
+        });
         return data;
     }).catch(error => {
         console.error("获取文物评论信息失败:", error);
@@ -28,7 +33,7 @@ export async function AddComments(url, params) {
         method: 'post',
         data:params
     }).then(response => {
-        if(response.status !== 200)
+        if(response.status !== 200 || response.data.ans !== true)
             throw new Error("响应异常");
         return true;
     }).catch(error => {

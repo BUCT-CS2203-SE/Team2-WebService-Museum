@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 绑定到指定接口 -->        
+<mapper namespace="com.example.museum.mapper.CommentsMapper">
+    <select id="getCommentByRelicId">
+        SELECT 
+        c.id AS id,
+        a.account AS author,
+        a.avatar AS avatar,
+        c.content AS content,
+        c.addtime AS datetime
+        FROM comment_relic c
+        JOIN app_user a ON a.id = c.uid
+        WHERE c.rid = #{rid}
+        ORDER BY c.addtime
+    </select>
+    <insert id="addComments">
+        INSERT INTO comment_relic(uid, rid, content, addtime)
+        SELECT u.id, #{id}, #{contents}, #{datetime}
+        FROM app_user u
+        WHERE u.account = #{username}
+    </insert>
+</mapper>
