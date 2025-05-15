@@ -20,6 +20,8 @@ async function handleLogout() {
     await service.post(Api.url.logout,{});
     // 1. 清除本地存储中的 Token
     localStorage.removeItem('jwt');
+    localStorage.removeItem('username');
+    localStorage.removeItem('avatar');                  
     // 2. 取消 axios 请求头上的 Authorization
     delete service.defaults.headers.common['Authorization'];
     // 3. 跳转回登录页
