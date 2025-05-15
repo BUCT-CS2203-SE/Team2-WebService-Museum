@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 绑定到指定接口 -->        
+<mapper namespace="com.example.museum.mapper.RelicSearchMapper">
+    <resultMap id="relicVOmap" type="com.example.museum.vo.RelicItemVO">
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="Title" jdbcType="VARCHAR" property="title"/>
+        <result column="ImgUrl" jdbcType="VARCHAR" property="src"/>
+    </resultMap>
+    <select id="SearchRelic" resultMap="relicVOmap">
+        SELECT id,Title,ImgUrl
+        FROM art
+        <where>
+            <if test="dto.type != null and dto.type != 'null'">
+                AND Classifications = #{dto.type}
+            </if>
+            <if test="dto.time != null and dto.time != 'null'">
+                AND Dynasty LIKE CONCAT('%', #{dto.time}, '%')
+            </if>
+            <if test="dto.museum != null and dto.museum != 'null'">
+
+            </if>
+            <if test="dto.name != null and dto.name != ''">
+                AND Title LIKE CONCAT('%', #{dto.name}, '%')
+            </if>
+            <if test="dto.artist != null and dto.artist != ''">
+                AND Artist = #{dto.artist}
+            </if>
+        </where>
+        <choose>
+            <when test="dto.sortby == 1">
+                ORDER BY Title ASC
+            </when>
+            <when test="dto.sortby == 2">
+                ORDER BY CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(Dynasty, '（', -1), '-', 1) AS UNSIGNED)
+            </when>
+            <otherwise>
+                ORDER BY id ASC
+            </otherwise>
+        </choose>
+    LIMIT #{dto.pagesize} OFFSET #{offsize}
+    </select>
+
+    <select id="CountSearchRelicl" resultType="Long">
+        SELECT count(*)
+        FROM art
+        <where>
+            <if test="dto.type != null and dto.type != 'null'">
+                AND Classifications = #{dto.type}
+            </if>
+            <if test="dto.time != null and dto.time != 'null'">
+                AND Dynasty LIKE CONCAT('%', #{dto.time}, '%')
+            </if>
+            <if test="dto.museum != null and dto.museum != 'null'">
+
+            </if>
+            <if test="dto.name != null and dto.name != ''">
+                AND Title LIKE CONCAT('%', #{dto.name}, '%')
+            </if>
+            <if test="dto.artist != null and dto.artist != ''">
+                AND Artist = #{dto.artist}
+            </if>
+        </where>
+        <choose>
+            <when test="dto.sortby == 1">
+                ORDER BY Title ASC
+            </when>
+            <when test="dto.sortby == 2">
+                ORDER BY CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(Dynasty, '（', -1), '-', 1) AS UNSIGNED)
+            </when>
+            <otherwise>
+                ORDER BY id ASC
+            </otherwise>
+        </choose>
+    </select>
+
+    <resultMap id="Detailvo" type="com.example.museum.vo.DetailVO">
+        <result column="Classifications" jdbcType="VARCHAR" property="type"/>
+        <result column="Artist" jdbcType="VARCHAR" property="atrist"/>
+        <result column="Description" jdbcType="VARCHAR" property="description"/>
+        <result column="Credit" jdbcType="VARCHAR" property="credit"/>
+        <result column="Materials" jdbcType="VARCHAR" property="material"/>
+        <result column="Dimensions" jdbcType="VARCHAR" property="scale"/>
+        <result column="Dynasty" jdbcType="VARCHAR" property="era"/>
+        <result column="Title" jdbcType="VARCHAR" property="name"/>
+    </resultMap>
+    <select id="getDetailInfo" resultMap="Detailvo">
+    select * from art where id = #{id}
+    </select>
+
+    <select id="getImgUrlLById"
+            parameterType="long"
+            resultType="java.lang.String">
+    SELECT ImgUrl
+    FROM art
+    WHERE id = #{id}
+    </select>
+
+    <select id="isFavoriteRelic" resultType="boolean">
+    select COUNT(*) from fav_relic where uid = (
+        select id from app_user where account = #{account}
+    ) and rid = #{rid}
+    </select>
+
+    <insert id="addFavRelic">
+    insert into fav_relic values(#{uid},#{rid},#{time})
+    </insert>
+    <delete id="delFavRelic">
+    delete from fav_relic where uid = #{uid} and rid = #{rid}
+    </delete>
+
+    <select id="getRelatedRelic">
+        SELECT 
+            a.id AS id, 
+            a.Title AS name,
+            (
+                (CASE WHEN t.Artist IS NOT NULL AND a.Artist = t.Artist THEN 100 ELSE 0 END) +
+                (CASE WHEN t.Materials IS NOT NULL AND a.Materials = t.Materials THEN 60 ELSE 0 END) +
+                (CASE WHEN t.Classifications IS NOT NULL AND a.Classifications = t.Classifications THEN 30 ELSE 0 END) +
+                (CASE WHEN t.Title IS NOT NULL AND a.Title LIKE CONCAT('%', t.Title, '%') THEN 50 ELSE 0 END)
+            ) AS score
+        FROM art a
+        JOIN (
+            SELECT Artist, Classifications, Title,Materials
+            FROM art
+            WHERE id = #{id}
+        ) t
+        WHERE a.id != #{id}
+        ORDER BY score DESC
+        LIMIT 20;
+    </select>
+</mapper>
