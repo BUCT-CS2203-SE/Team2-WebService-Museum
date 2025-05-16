@@ -103,7 +103,7 @@ const fetchRelicsInTimeSpan = async () => {
 //      const response = await axios.get(api.url.relic.timeline.data);
 //      // 筛选符合时间范围的文物
 //      const filteredRelics = response.data.filter(relic => {
-//      const match = relic.dateRange?.match(/(\d+)-(\d+)/);
+//      const match = relic.date_range?.match(/(\d+)-(\d+)/);
 //      if (match) {
 //      const relicStart = parseInt(match[1]);
 //      const relicEnd = parseInt(match[2]);
