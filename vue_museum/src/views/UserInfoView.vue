@@ -46,13 +46,13 @@
         <a-input-password v-model:value="formState.confirmPassword" />
       </a-form-item>
 
-      <a-form-item label="真实姓名" name="realName">
+      <!-- <a-form-item label="真实姓名" name="realName">
         <a-input v-model:value="formState.realName" />
       </a-form-item>
 
       <a-form-item label="证件号码" name="idNumber">
         <a-input v-model:value="formState.idNumber" />
-      </a-form-item>
+      </a-form-item> -->
 
       <a-form-item label="手机号码" name="phone">
         <a-input v-model:value="formState.phone" />
@@ -85,8 +85,8 @@ const formState = reactive({
   username: '', 
   password: '',
   confirmPassword: '',
-  realName: '',
-  idNumber: '',
+  // realName: '',
+  // idNumber: '',
   phone: '',
   email: '',
   avatar: '',
@@ -184,14 +184,14 @@ const rules = {
       trigger: 'blur',
     }),
   ],
-  realName: [
-    { required: true, message: '请输入真实姓名', trigger: 'blur' },
-    { pattern: /^[\u4e00-\u9fa5]{2,10}$/, message: '请输入2-10位中文姓名', trigger: 'blur' },
-  ],
-  idNumber: [
-    { required: true, message: '请输入证件号码', trigger: 'blur' },
-    { pattern: /^\d{17}[\dXx]$/, message: '请输入正确的证件号码', trigger: 'blur' },
-  ],
+  // realName: [
+  //   { required: true, message: '请输入真实姓名', trigger: 'blur' },
+  //   { pattern: /^[\u4e00-\u9fa5]{2,10}$/, message: '请输入2-10位中文姓名', trigger: 'blur' },
+  // ],
+  // idNumber: [
+  //   { required: true, message: '请输入证件号码', trigger: 'blur' },
+  //   { pattern: /^\d{17}[\dXx]$/, message: '请输入正确的证件号码', trigger: 'blur' },
+  // ],
   phone: [
     { required: true, message: '请输入手机号码', trigger: 'blur' },
     { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号码', trigger: 'blur' },
@@ -211,12 +211,12 @@ const fetchUserProfile = async () => {
     
     // 将接口数据映射到表单
     Object.assign(formState, {
-      username: userData.username,
-      realName: userData.realName,
-      idNumber: userData.idNumber,
+      username: userData.nickname,
+      // realName: userData.realName,
+      // idNumber: userData.idNumber,
       phone: userData.phone,
       email: userData.email,
-      avatar: userData.avatar || 'https://randomuser.me/api/portraits/men/1.jpg', // 默认头像
+      avatar: userData.img_url || 'https://randomuser.me/api/portraits/men/1.jpg', // 默认头像
     });
     
   } catch (error) {
@@ -271,8 +271,8 @@ const onFinish = async (values) => {
     const submitData = {
       username: values.username,
       password: values.password,
-      realName: values.realName,
-      idNumber: values.idNumber,
+      // realName: values.realName,
+      // idNumber: values.idNumber,
       phone: values.phone,
       email: values.email,
       avatar: values.avatar

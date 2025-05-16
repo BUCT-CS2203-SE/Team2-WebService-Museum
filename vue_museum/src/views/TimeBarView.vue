@@ -44,7 +44,7 @@ import { message } from "ant-design-vue";
 import { LeftOutlined, RightOutlined } from '@ant-design/icons-vue'; // 修改3: 引入图标
 import TimeLine from "@/components/TimeLine.vue";
 import api from "../api/Api.js"
-//import axios from "@/utils/request";//测试时要注释掉，正式使用时取消注释
+import axios from "@/utils/request";//测试时要注释掉，正式使用时取消注释
 
 const itemList = ref([]);
 const loading = ref(false);
@@ -52,19 +52,19 @@ const error = ref(null);
 const scrollWrapper = ref(null); // 修改4: 获取滚动容器DOM
 
 //以下是测试，正式使用时注释掉
-const generateMockData = () => {
-  const dynasties = ['夏朝', '商朝', '周朝', '秦朝', '汉朝', '唐朝', '宋朝', '元朝', '明朝', '清朝'];
-  const relics = ['青铜器', '瓷器', '玉器', '书画', '陶器', '金银器', '漆器', '石刻', '织绣', '钱币'];
+// const generateMockData = () => {
+//   const dynasties = ['夏朝', '商朝', '周朝', '秦朝', '汉朝', '唐朝', '宋朝', '元朝', '明朝', '清朝'];
+//   const relics = ['青铜器', '瓷器', '玉器', '书画', '陶器', '金银器', '漆器', '石刻', '织绣', '钱币'];
   
-  return Array.from({ length: 10 }, (_, i) => ({
-    id: i + 1,
-    imageUrl: `https://picsum.photos/300/200?random=${i}`, // 使用随机图片
-    name: ` ${relics[i % relics.length]}`,
-    dynasty: dynasties[i % dynasties.length],
-    dateRange: `约${900 + i%4 * 100}-${1000 + i%4 * 100}年`
+//   return Array.from({ length: 10 }, (_, i) => ({
+//     id: i + 1,
+//     imageUrl: `https://picsum.photos/300/200?random=${i}`, // 使用随机图片
+//     name: ` ${relics[i % relics.length]}`,
+//     dynasty: dynasties[i % dynasties.length],
+//     dateRange: `约${900 + i%4 * 100}-${1000 + i%4 * 100}年`
 
-  }));
-};
+//   }));
+// };
 //以上是测试，正式使用时删除
 
 // 修改5: 计算时间轴总宽度（根据项目数量）
@@ -101,54 +101,18 @@ const checkScrollPosition = () => {
   isScrollLeft.value = container.scrollLeft <= 10;
   isScrollRight.value = container.scrollLeft + container.clientWidth >= container.scrollWidth - 10;
 };
- //以下是测试，正式使用时删除
- const fetchTimelineData = async () => {
-   try {
-     loading.value = true;
-     error.value = null;
+//  //以下是测试，正式使用时删除
+//  const fetchTimelineData = async () => {
+//    try {
+//      loading.value = true;
+//      error.value = null;
     
-     // 修改3: 直接使用Mock数据而不是axios请求
-     const mockData = generateMockData();
-     console.log(api.url.relic.timeline.data);
-     const uniqueItems = [];
-     const seenTimeRanges = new Set();
-     mockData.forEach(item => {
-      const timeRange = item.dateRange; // 假设文物数据中包含dateRange属性
-      if (!seenTimeRanges.has(timeRange)) {
-        seenTimeRanges.add(timeRange);
-        uniqueItems.push({
-          id: item.id,
-          imgUrl: item.imageUrl,
-          title: item.name,
-          date: `(${item.dateRange})`,
-          dynasty: item.dynasty,
-        });
-      }
-    });
-    
-    itemList.value = uniqueItems;
-    
-     // 修改4: 添加延迟模拟网络请求
-     await new Promise(resolve => setTimeout(resolve, 500));
-    
-   } catch (err) {
-     error.value = '加载数据时发生错误';
-     message.error('获取文物时间轴失败');
-   } finally {
-     loading.value = false;
-   }
- };
-//以上是测试，正式使用时删除
-
-//获取时间轴数据，正式使用时取消注释,这里做出了修改，如果同一时间范围中出现多个文物，只显示其中一个
-// const fetchTimelineData = async () => {
-//   try {
-//     loading.value = true;
-//     error.value = null;
-//     const response = await axios.get(api.url.relic.timeline.data); 
-//     const uniqueItems = [];
-//     const seenTimeRanges = new Set();    
-//      response.data.forEach(item => {
+//      // 修改3: 直接使用Mock数据而不是axios请求
+//      const mockData = generateMockData();
+//      console.log(api.url.relic.timeline.data);
+//      const uniqueItems = [];
+//      const seenTimeRanges = new Set();
+//      mockData.forEach(item => {
 //       const timeRange = item.dateRange; // 假设文物数据中包含dateRange属性
 //       if (!seenTimeRanges.has(timeRange)) {
 //         seenTimeRanges.add(timeRange);
@@ -158,23 +122,59 @@ const checkScrollPosition = () => {
 //           title: item.name,
 //           date: `(${item.dateRange})`,
 //           dynasty: item.dynasty,
-
-
-
 //         });
 //       }
 //     });
+    
+//     itemList.value = uniqueItems;
+    
+//      // 修改4: 添加延迟模拟网络请求
+//      await new Promise(resolve => setTimeout(resolve, 500));
+    
+//    } catch (err) {
+//      error.value = '加载数据时发生错误';
+//      message.error('获取文物时间轴失败');
+//    } finally {
+//      loading.value = false;
+//    }
+//  };
+//以上是测试，正式使用时删除
 
-    // itemList.value = uniqueItems;
-//   } catch (err) {
+//获取时间轴数据，正式使用时取消注释,这里做出了修改，如果同一时间范围中出现多个文物，只显示其中一个
+const fetchTimelineData = async () => {
+  try {
+    loading.value = true;
+    error.value = null;
+    const response = await axios.get(api.url.relic.timeline.data); 
+    const uniqueItems = [];
+    const seenTimeRanges = new Set();    
+     response.data.forEach(item => {
+      const timeRange = item.date_range; // 假设文物数据中包含dateRange属性
+      if (!seenTimeRanges.has(timeRange)) {
+        seenTimeRanges.add(timeRange);
+        uniqueItems.push({
+          id: item.id,
+          imgUrl: item.ImgUrl,//原来是image.Url
+          title: item.Title,  //原来是name
+          date: `(${item.date_range})`, //原来是dateRange
+          dynasty: item.Dynasty,       //原来是dynasty
+
+
+
+        });
+      }
+    });
+
+    itemList.value = uniqueItems;
+  } catch (err) {
     
-//     error.value = err.response?.data?.message || err.message;
-//     message.error('获取文物时间轴失败');
+    error.value = err.response?.data?.message || err.message;
+    message.error('获取文物时间轴失败');
     
-//   } finally {
-//     loading.value = false;
-//   }
-// };
+  } finally {
+    loading.value = false;
+  }
+};
 
 onMounted(() => {
   fetchTimelineData();
