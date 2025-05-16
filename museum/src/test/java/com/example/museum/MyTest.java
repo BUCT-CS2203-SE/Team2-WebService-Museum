@@ -52,20 +52,20 @@ public class MyTest {
         System.out.println("Id is "+myce.getIdByAccount("test"));
     }
 
-    @Autowired
-    private ArtMapper artmap;
-    @Test
-    void te2() {
-        ArrayList<Map<String, Object>> li = new ArrayList<>(artmap.findTimelineData());
-        System.out.println("ALL Size : " + li.size());
-        for (int i = 0; i < 10; i++) {
-            for (Map.Entry<String, Object> entry : li.get(i).entrySet()) {
-                String key = entry.getKey();
-                String value = String.valueOf(entry.getValue());
-                System.out.println(key + ": " + value);
-            }
-        }
-    }
+    // @Autowired
+    // private ArtMapper artmap;
+    // @Test
+    // void te2() {
+    //     ArrayList<Map<String, Object>> li = new ArrayList<>(artmap.findTimelineData());
+    //     System.out.println("ALL Size : " + li.size());
+    //     for (int i = 0; i < 10; i++) {
+    //         for (Map.Entry<String, Object> entry : li.get(i).entrySet()) {
+    //             String key = entry.getKey();
+    //             String value = String.valueOf(entry.getValue());
+    //             System.out.println(key + ": " + value);
+    //         }
+    //     }
+    // }
     
     //以下测试选做，都能使用
     // @Autowired
