@@ -141,6 +141,8 @@ async function onSubmit() {
     alert("登录成功!");
     localStorage.setItem('jwt', data.data.token);
     localStorage.setItem('username',data.data.username);
+    if(data.data.avatar !== null) localStorage.setItem('avatar',data.data.avatar);
+    else localStorage.setItem('avatar','/img/photo/user_default500x500.png');
     // 登录动作中
     console.log("保存成功："+data.data.token+ "username: "+data.data.username);
     //登陆成功跳转路径

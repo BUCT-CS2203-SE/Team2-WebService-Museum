@@ -10,6 +10,7 @@
         <result column="account" jdbcType="VARCHAR" property="account"/>
         <result column="password" jdbcType="VARCHAR" property="password"/>
         <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="avatar" jdbcType="VARCHAR" property="avatar"/>
         <result column="isFrozen" jdbcType="TINYINT" property="isFrozen"/>
         <result column="isAdmin" jdbcType="TINYINT" property="isAdmin"/>
     </resultMap>
@@ -41,7 +42,7 @@
         values (#{account},#{password},#{email},#{isAdmin},#{isFrozen})
     </insert>
     <update id="updateOneUser">
-        update app_user set account = #{account}, password = #{password}, email=#{email},isAdmin=#{isAdmin},isFrozen=#{isFrozen} where id = #{id}
+        update app_user set account = #{account}, password = #{password}, email=#{email},avatar=#{avatar},isAdmin=#{isAdmin},isFrozen=#{isFrozen} where id = #{id}
     </update>
     
 </mapper>

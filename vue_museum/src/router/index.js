@@ -59,6 +59,15 @@ const routes = [
       id: Number(route.query.id)
     }),
     meta: {public:true, hasNav: true}
+  },
+  {
+    path:'/tologout',
+    name: 'toLogout',
+    component: () => import('../components/toLogout.vue'),
+    props: (route) => ({
+      id: Number(route.query.id)
+    }),
+    meta: {public:true, hasNav: true}
   }
 ]
 

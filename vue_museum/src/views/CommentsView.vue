@@ -76,7 +76,7 @@ const props = defineProps({
 })
 
 const relic = reactive({ id: props.id, name: '千年青铜镜' })  //文物信息
-const user = reactive({ avatar: require("../assets/user_default500x500.png") }) //用户头像url,考虑在前端保存
+const user = reactive({ avatar: localStorage.getItem('avatar') }) //用户头像url,考虑在前端保存
 const comments = ref([
   {  author: '张三', avatar: '', content: '非常精美！', datetime: '2025-05-10 14:32' },
   {  author: '李四', avatar: '', content: '请问出土地点？', datetime: '2025-05-11 09:15' },
@@ -90,34 +90,31 @@ async function addComment() {
   if (!txt) return;
   try{
     const apply = await AddComments(Api.url.comments.add_comments,{
-      username: localStorage.getItem('username'),
+      username: "test", //正式改为localStorage.getItem('username')
       id: props.id,
       contents: txt,
-      datetime: new Date().toLocaleString()
+      datetime: new Date().toISOString().slice(0, 19) //注意格式
     })
     if(!apply) return;
   }catch(error) {message.error(error);}
   comments.value.unshift({
     // id: Date.now(),
-    author: '游客',
-    avatar: '',
+    author: 'test',   //正式改为localStorage.getItem('username')
+    avatar: user.avatar,
     content: txt,
     datetime: new Date().toLocaleString()
   })
   newComment.value = ''
 }
 
-const response = ref({
-  name: '文物名称',
-  comments: [{author:'用户名',avatar: '头像url',content:'评论详情',datetime:'评论时间'}]
-})
-
 /**2：  加载评论区数据 */
 onMounted(async () =>{
   try{
-    response.value = await getComments(Api.url.comments.comments,{
+    const data = await getComments(Api.url.comments.comments,{
       id:props.id
     });
+    relic.name = data.name;
+    comments.value = data.comments;
   }catch(error){
     message.error(error);
   }

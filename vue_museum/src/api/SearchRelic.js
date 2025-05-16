@@ -23,7 +23,7 @@ export async function getcatasETcList(url, params) {
             { value: 'null', label: '全部' },
             ...formatted
         ];
-        return result;
+        return result.value;
     }).catch(error => {
         console.error("获取文物选择框列表失败:", error);
         message.error("获取文物选择框列表失败");

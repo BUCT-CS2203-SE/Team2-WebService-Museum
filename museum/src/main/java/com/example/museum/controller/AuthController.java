@@ -50,13 +50,17 @@ public class AuthController {
     @PostMapping("/login")
     public Map<String, String> login(@RequestBody Map<String, String> creds) throws UserNotExistException {
         String nowAccount = creds.get("user");
+        String avatar = "";
         if (!creds.get("way").equals("true")) { // 邮箱登录
             AppUser user = myce.findByEmail(nowAccount);
             if (user == null)
                 throw new UserNotExistException("该邮箱未注册！");
             nowAccount = user.getAccount();
+            avatar = user.getAvatar();
         }else{
-            if(!myce.existByAccount(nowAccount)) throw new UserNotExistException("该账号未注册！");
+            AppUser user = myce.findByAccount(nowAccount);
+            if(user == null) throw new UserNotExistException("该账号未注册！");
+            avatar = user.getAvatar();
         }
         try {
             Authentication auth = authenticationManager.authenticate(
@@ -69,7 +73,7 @@ public class AuthController {
                     .signWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)),
                             SignatureAlgorithm.HS256)
                     .compact(); // 生成 JWT
-            return Map.of("token",token,"username",nowAccount); // 返回 {"token":"..."}
+            return Map.of("token",token,"username",nowAccount,"avatar",avatar); // 返回 {"token":"..."}
         } catch (Exception e) {
             throw new UserNotExistException("密码错误!");
         }
@@ -88,7 +92,7 @@ public class AuthController {
         System.out.println("<-- 邮箱校验成功 -->");
         Boolean isAcnt = myce.existByAccount(account),isEml = myce.existByEmail(email);
         if(!isAcnt && !isEml){
-            AppUser user = new AppUser(null, email, account, creds.get("password"), false, false);
+            AppUser user = new AppUser(null, email, account, creds.get("password"),null, false, false);
             if(!myce.addNewUser(user)){
                 response.put("message", "注册失败，服务器异常！");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
