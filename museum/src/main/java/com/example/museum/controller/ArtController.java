@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.museum.dto.ArtDTO;
 import com.example.museum.dto.RelicSearchDTO;
 import com.example.museum.mapper.ArtMapper;
 import com.example.museum.service.RelicSearchService;
@@ -43,7 +44,7 @@ public class ArtController {
     }
 
     @GetMapping("/timeline")
-    public List<Map<String, Object>> getTimelineData() {
+    public List<ArtDTO> getTimelineData() {
         return artMapper.findTimelineData();
     }
 

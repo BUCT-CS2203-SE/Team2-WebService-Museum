@@ -81,7 +81,7 @@ export default {
                  * dynasty   文物朝代       string类型 例如：'汉代'
                  * dateRange 文物年代范围   string类型 例如：'约1100年-1200年'
                  */
-                data: '/relic/timeline',
+                data: '/test/timeline',
             },
             user: {
                 getInfo: "/user/getInfo",
