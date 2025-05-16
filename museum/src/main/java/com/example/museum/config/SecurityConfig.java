@@ -37,7 +37,7 @@ public class SecurityConfig {
         .csrf(csrf -> csrf.disable())
         .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/test/**","/login","/regest","/forget","/getCode").permitAll()
+            .requestMatchers("/comments/**","/test/**","/login","/regest","/forget","/getCode","/user/**").permitAll()
             .anyRequest().authenticated()
             )
         .logout(out -> out

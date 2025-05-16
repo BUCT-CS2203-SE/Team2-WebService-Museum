@@ -149,18 +149,15 @@ const fetchTimelineData = async () => {
     const uniqueItems = [];
     const seenTimeRanges = new Set();    
      response.data.forEach(item => {
-      const timeRange = item.date_range; // 假设文物数据中包含dateRange属性
+      const timeRange = item.dateRange; // 假设文物数据中包含dateRange属性
       if (!seenTimeRanges.has(timeRange)) {
         seenTimeRanges.add(timeRange);
         uniqueItems.push({
           id: item.id,
-          imgUrl: item.ImgUrl,//原来是image.Url
-          title: item.Title,  //原来是name
-          date: `(${item.date_range})`, //原来是dateRange
-          dynasty: item.Dynasty,       //原来是dynasty
-
-
-
+          imgUrl: item.imgUrl,//原来是image.Url
+          title: item.title,  //原来是name
+          date: `(${item.dateRange})`, //原来是dateRange
+          dynasty: item.dynasty,       //原来是dynasty
         });
       }
     });

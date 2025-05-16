@@ -35,8 +35,8 @@ import { defineProps, ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import SingleRelic from '@/components/SingleRelic.vue';
 import { message } from 'ant-design-vue';
-//import axios from '@/utils/request';
-//import api from '../api/Api.js'; 
+import Api from '@/api/Api';
+import axios from "@/utils/request";//测试时要注释掉，正式使用时取消注释
 
 const router = useRouter();
 function goBack() { router.back(); }
@@ -50,75 +50,34 @@ const props = defineProps({
 const time_span = `${props.sta}年 - ${props.end}年`;
 
 // 文物数据
-const relics = ref([]);
+const relics = ref([{
+  id: 1,
+  src: require('@/assets/logo.png'),
+  title: '文物标题 A'
+}]);
 
 // 加载状态
 const loading = ref(true);
 
-// 模拟获取该时间段内的文物数据，以下是mork数据测试，实际使用时注释
+
+
+// 从后端接口获取该时间段内的文物数据,以下是实际使用api接口的，测试时注释
 const fetchRelicsInTimeSpan = async () => {
   try {
-    // 模拟API请求延迟
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    // 模拟根据时间范围获取文物数据
-    // 实际项目中应替换为真实的API调用
-    const mockData = [
-      { id: 101, src: require('@/assets/logo.png'), title: '司母戊鼎 (时间范围: 1000-1200年)' },
-      { id: 102, src: require('@/assets/logo.png'), title: '文物标题 B (时间范围: 1000-1200年)' },
-      { id: 103, src: require('@/assets/logo.png'), title: '文物标题 C (时间范围: 1200-1400年)' },
-      { id: 104, src: require('@/assets/logo.png'), title: '文物标题 D (时间范围: 1300-1500年)' },
-      { id: 105, src: require('@/assets/logo.png'), title: '文物标题 E (时间范围: 1400-1600年)' },
-    ];
-    
-    // 筛选符合时间范围的文物
-    const filteredRelics = mockData.filter(relic => {
-      // 这里应根据实际文物时间数据进行筛选
-      // 简化逻辑：假设文物标题中包含时间范围信息且格式为 "时间范围: XXXX-XXXX年"
-      const match = relic.title.match(/时间范围: (\d+)-(\d+)年/);
-      if (match) {
-        const relicStart = parseInt(match[1]);
-        const relicEnd = parseInt(match[2]);
-        return relicStart <= props.end && relicEnd >= props.sta;
-      }
-      return false;
+    loading.value = true; //开始加载时设置加载状态
+    // 修改处4：使用axios从后端接口获取文物数据
+    const response = await axios.post(Api.url.relic.timeline.info, {
+      sta:props.sta,
+      end:props.end
     });
-    
-    relics.value = filteredRelics;
+    if(response.status===200) relics.value = response.data;
   } catch (error) {
     message.error('获取文物数据失败');
     console.error(error);
   } finally {
-    loading.value = false;
+    loading.value = false; // 修改处5：加载完成后设置加载状态
   }
 };
-//以上是mork数据测试，实际使用时注释
-
-
-// 从后端接口获取该时间段内的文物数据,以下是实际使用api接口的，测试时注释
-// const fetchRelicsInTimeSpan = async () => {
-//   try {
-//     loading.value = true; //开始加载时设置加载状态
-//     // 修改处4：使用axios从后端接口获取文物数据
-//      const response = await axios.get(api.url.relic.timeline.data);
-//      // 筛选符合时间范围的文物
-//      const filteredRelics = response.data.filter(relic => {
-//      const match = relic.date_range?.match(/(\d+)-(\d+)/);
-//      if (match) {
-//      const relicStart = parseInt(match[1]);
-//      const relicEnd = parseInt(match[2]);
-//      return relicStart <= props.end && relicEnd >= props.sta;
- // }
-      // return false;
-//     });    
-//     relics.value = filteredRelics;
-//   } catch (error) {
-//     message.error('获取文物数据失败');
-//     console.error(error);
-//   } finally {
-//     loading.value = false; // 修改处5：加载完成后设置加载状态
-//   }
-// };
 //以上是实际使用api接口的，测试时注释
 onMounted(() => {
   fetchRelicsInTimeSpan();

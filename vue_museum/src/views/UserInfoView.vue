@@ -75,7 +75,8 @@ import { reactive, ref, onMounted } from 'vue';
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import api from "../api/Api.js"
-import axios from '@/utils/request'; // 修改,mork测试时注释，实际使用时取消注释
+import axios from "@/utils/request";//测试时要注释掉，正式使用时取消注释
+
 
 // 头像上传状态
 const loading = ref(false);
@@ -206,7 +207,7 @@ const rules = {
 const fetchUserProfile = async () => {
   try {
     loading.value = true;
-    const response = await axios.get(api.url.user.getInfo); 
+    const response = await axios.get(api.url.user.getInfo,{username:"test"}); 
     const userData = response.data;
     
     // 将接口数据映射到表单
