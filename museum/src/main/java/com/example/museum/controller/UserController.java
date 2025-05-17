@@ -1,6 +1,7 @@
 package com.example.museum.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.museum.mapper.UserMapper;
 import com.example.museum.model.User;
+import com.example.museum.service.RelicSearchService;
 
 @RestController
 @RequestMapping("/user")
@@ -60,5 +62,35 @@ public class UserController {
         res.put("msg", "头像更新成功");
         res.put("avatar", avatar);
         return res;
+    }
+
+    @Autowired
+    private RelicSearchService rsce;
+    @PostMapping("/myfav")
+    public List<Map<String,Object>> getMyFav(@RequestBody Map<String,String> info){
+        String username = info.get("username");
+        String rn = info.get("relicname");
+        String ti = info.get("time");
+        System.out.println("\nGet Info: "+info);
+        return rsce.searchMyFavRelic(username, rn, ti);
+    }
+    @PostMapping("/disfav")
+    public Map<String,Object> delMyFav(@RequestBody Map<String,String> info){
+        String username = info.get("username");
+        Long rid = Long.parseLong(info.get("rid"));
+        return Map.of("ans",rsce.changeFavRelic(rid, username, false));
+    }
+    @PostMapping("/browser")
+    public List<Map<String,Object>> getMyHistory(@RequestBody Map<String,String> info){
+        String uname = info.get("username");
+        String rname = info.get("relicname");
+        String ti = info.get("time");
+        return rsce.getUserHistory(uname, rname, ti);
+    }
+    @PostMapping("/delbrowser")
+    public Map<String,Object> delMyHistory(@RequestBody Map<String,String> info){
+        String username = info.get("username");
+        Long rid = Long.parseLong(info.get("rid"));
+        return Map.of("ans",rsce.changeHistory( username,rid, true));
     }
 }

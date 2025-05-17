@@ -54,3 +54,20 @@ export async function SearchRelic(url, params) {
         return { total: 0, data: [] };
     });
 }
+
+/**刷新浏览信息 */
+export async function ReHistory(url, params) {
+    return request({
+        url: url,
+        method: 'post',
+        data:params
+    }).then(response => {
+        if(response.status !== 200 || response.data.ans !== true)
+            throw new Error("响应异常");
+        return true;
+    }).catch(error => {
+        console.error("刷新浏览信息失败:", error);
+        message.error("刷新失败");
+        return false;
+    });
+}

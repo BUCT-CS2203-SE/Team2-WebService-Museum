@@ -21,4 +21,25 @@
         FROM app_user u
         WHERE u.account = #{username}
     </insert>
+
+    <select id="getUserComments">
+    select cr.id as id,cr.rid as rid,a.Title as name,cr.content as content,cr.addtime as time
+    from comment_relic cr 
+        JOIN app_user ap on ap.id = cr.uid
+        JOIN art a on a.id = cr.rid
+    <where>
+        ap.account = #{un}
+        <if test="rn != null and rn != ''">
+        AND a.Title LIKE CONCAT('%', #{rn}, '%')
+        </if>
+        <if test="con != null and con != ''">
+        AND cr.content LIKE CONCAT('%', #{con}, '%')
+        </if>
+        <if test="ti != null and ti != ''">
+        AND cr.addtime &lt;= #{ti}
+        </if>
+    </where>
+    order by cr.addtime desc
+    </select>
+
 </mapper>

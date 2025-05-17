@@ -237,6 +237,7 @@ function onComment() {
 import { getDetail,isFavorite } from '@/api/relicDetail'
 import Api from '@/api/Api'
 import { message } from 'ant-design-vue'
+import { ReHistory } from '@/api/SearchRelic'
 
 /**2： 暂时写到这，此处还需要赋值 */
 async function FetchData(){
@@ -248,11 +249,24 @@ async function FetchData(){
     message.error("获取文物具体信息失败!");
   }  
 }
+async function RefreshHis(){
+  try{
+    const res = await ReHistory(Api.url.relic.rehistory,{
+      username: "test",
+      rid: props.id
+    })
+    if(res) message.info("刷新浏览信息成功！");
+  }catch(error){
+    message.error("刷新失败");
+  }
+}
 watch(() => props.id, () => {
-  FetchData(); // 监听 id 改变，重新请求数据
+  FetchData(); // 监听 id 改变，重新请求数据，刷新依赖
+  RefreshHis();
 });
 onMounted(async () => {
     FetchData();
+    RefreshHis();
 })
 </script>
 

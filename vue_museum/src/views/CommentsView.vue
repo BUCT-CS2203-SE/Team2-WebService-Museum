@@ -123,7 +123,7 @@ onMounted(async () =>{
 
 <style scoped>
 .comments-wrapper {
-  max-width: 800px;
+  width: 800px;
   margin: 24px auto;
   padding: 0 16px;
 }
