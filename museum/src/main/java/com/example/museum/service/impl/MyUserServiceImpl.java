@@ -11,8 +11,10 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service  // Spring 扫描到这个实现
+@Transactional
 public class MyUserServiceImpl implements MyUserService {
 
     @Autowired

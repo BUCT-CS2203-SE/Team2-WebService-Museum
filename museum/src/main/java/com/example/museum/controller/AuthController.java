@@ -49,6 +49,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public Map<String, String> login(@RequestBody Map<String, String> creds) throws UserNotExistException {
+        System.out.println("\nGet Login Form: "+creds);
         String nowAccount = creds.get("user");
         String avatar = "";
         if (!creds.get("way").equals("true")) { // 邮箱登录
@@ -66,6 +67,7 @@ public class AuthController {
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             nowAccount, creds.get("password"))); // 执行认证
+            System.out.println("\n Now Here\n");
             String token = Jwts.builder()
                     .setSubject(auth.getName())
                     .setIssuedAt(Date.from(Instant.now()))
@@ -73,9 +75,11 @@ public class AuthController {
                     .signWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)),
                             SignatureAlgorithm.HS256)
                     .compact(); // 生成 JWT
-            return Map.of("token",token,"username",nowAccount,"avatar",avatar); // 返回 {"token":"..."}
+            Map<String,String> ans = new HashMap<>();       //avatar可能为空，只能采用这种形式
+            ans.put("token",token);ans.put("username",nowAccount);ans.put("avatar",avatar);
+            return ans;
         } catch (Exception e) {
-            throw new UserNotExistException("密码错误!");
+            throw new UserNotExistException("密码错误! "+e.getMessage());
         }
     }
 
