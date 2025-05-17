@@ -34,7 +34,8 @@
   padding: 0px 10px;
   background-color: rgb(17, 17, 17);
   position: relative;
-  height: 65px;
+  //height: 65px;
+  height:8vh;
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 2fr;

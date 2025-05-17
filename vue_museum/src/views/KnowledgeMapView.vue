@@ -9,8 +9,8 @@
       <div class="control-container">
 
         <div class="controls">
-          <textarea v-model="cypher" rows="4" cols="50"></textarea><br>
-          <button @click="reload">Submit</button>
+<!--          <textarea v-model="cypher" rows="4" cols="50"></textarea><br>-->
+          <button @click="reload">Query</button>
           <button @click="stabilize">Stabilize</button>
         </div>
 
@@ -38,6 +38,7 @@
 
       </div>
       <div class="selects-container">
+
 
         <select v-model="selected4">
           <option v-for="option in fourthOptions" :key="option" :value="option.value">
@@ -166,18 +167,25 @@ const config = ref({
       //   to: { enabled: true }
       // }
     },
+    physics: {
+      enabled: true, // 启用物理效果
+      barnesHut: {
+        gravitationalConstant: -3000, // 引力常数，负值表示斥力
+        centralGravity: 0.3,     // 向中心的引力
+        springLength: 95,        // 弹簧自然长度
+        // springConstant: 0.04,    // 弹簧常数
+        springConstant: 0.01,
+        // damping: 0.09           // 阻尼系数
+        damping: 0.29           // 阻尼系数
+      },
+      stabilization: {
+        iterations: 1000,        // 稳定化迭代次数
+        updateInterval: 50       // 更新间隔
+      }
+    },
     layout: {
       improvedLayout: true
     },
-    //树状图
-    // layout: {
-    //   hierarchical: {
-    //     enabled: true,
-    //     // 严格按照父子关系划分
-    //     // sortMethod: 'directed'
-    //   }
-    // }
-
 
   },
   labels: {
@@ -252,7 +260,6 @@ const config = ref({
     }
   },
 
-
   relationships: {
     "位于": {
       // value: "weight",
@@ -301,12 +308,12 @@ const config = ref({
     }
   },
 
-
-  initialCypher: "MATCH (n)-[r]->(m) RETURN n,r,m LIMIT 30",
+  initialCypher: "MATCH (n)-[r]->(m) RETURN n,r,m LIMIT 20",
+  // initialCypher: "MATCH (n:Artifact) RETURN n LIMIT 20",
 });
 
 
-const initialNodeIds = ref(new Set());
+// const initialNodeIds = ref(new Set());
 const expandedNodes = ref(new Set());
 
 let vis = null;
@@ -314,52 +321,22 @@ onMounted(() => {
   vis = new NeoVis(config.value)
   vis.render();
 
-
-  // // 监听初始渲染完成事件，记录初始节点
-  // vis.registerOnEvent("completed", (e) => {
-  //   const network = vis.network;
-  //   // 使用 vis.js 网络的原生事件监听稳定状态
-  //   network.on("stabilizationIterationsDone", () => {
-  //     const nodes = network.body.data.nodes;
-  //     // 更新展开节点集合，只保留当前存在的节点
-  //     expandedNodes.value = new Set(
-  //         Array.from(expandedNodes.value).filter(id => nodes.get(id) !== undefined)
-  //     );
-  //   });
-  // });
-
-
-  // 注册节点点击展开事件
-
   vis.registerOnEvent("clickNode", (properties) => {
-    const nodeId = properties.nodeId;
-    if (expandedNodes.value.has(nodeId)) {
-      // 如果节点已展开，则收起
-      expandedNodes.value.delete(nodeId);
-      // const expandedNodesArray = Array.from(expandedNodes.value);
 
-      // 确保保留初始节点
-      const finalNodes = new Set([...initialNodeIds.value, ...expandedNodes.value]);
-      const cypher = `
-        MATCH (n)-[r]-(m)
-        WHERE ID(n) IN [${Array.from(finalNodes).join(',')}]
-        RETURN n,r,m LIMIT 60
-      `;
-      vis.updateWithCypher(cypher);
-    } else {
+    const nodeId = properties.nodeId;
+    if (!expandedNodes.value.has(nodeId)) {
 
       // 如果节点未展开，则展开
       expandedNodes.value.add(nodeId);
-      const finalNodes = new Set([...initialNodeIds.value, ...expandedNodes.value]);
-      const cypher = `
+      // const finalNodes = new Set([ ...expandedNodes.value]);
+      const cypher3 = `
         MATCH (n)-[r]-(m)
-        WHERE ID(n) IN [${Array.from(finalNodes).join(',')}]
-        RETURN n,r,m LIMIT 60
+        WHERE ID(n) IN [${properties.nodeId}]
+        RETURN n,r,m LIMIT 20
       `;
-      vis.updateWithCypher(cypher);
+      vis.updateWithCypher(cypher3);
     }
   });
-
 
 });
 
@@ -384,7 +361,6 @@ const stabilize = () => {
 <style scoped>
 #viz {
   width: 100%;
-  height: 95vh;
   border: 1px solid #ddd;
   border-radius: 8px;
 }
@@ -396,11 +372,12 @@ const stabilize = () => {
   /* 设置主轴方向为水平 */
   gap: 20px;
   /* 设置子元素之间的间距 */
-  min-height: 95vh;
-  height: auto;
+  //height: 100%;
+  height: 92vh;
   /* 设置容器高度为视口高度 */
   padding: 10px;
   /* 设置内边距 */
+
 }
 
 .container {
@@ -409,6 +386,9 @@ const stabilize = () => {
   border-radius: 20px;
   padding: 15px;
   width: 25%;
+  height: auto;
+  bottom: 0;
+
 }
 
 .control-container {
