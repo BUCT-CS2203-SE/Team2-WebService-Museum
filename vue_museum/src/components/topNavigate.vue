@@ -36,17 +36,15 @@
 <style scoped>
 .topnav {
   padding: 0px 10px;
-  //background-color: #a4fcd4;
   background-color: rgb(17, 17, 17);
   position: relative;
-  height: 80px;
+  height: 65px;
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 2fr;
   align-items: center;
   font-size: large;
-  gap: 80px;
-
+  gap: 60px;
   top: 0;          /* 固定在页面顶部 */
   z-index: 9999;   /* 确保在最上层 */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* 添加阴影 */
@@ -62,7 +60,7 @@
   display: grid;
   height: inherit;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-  padding: 0px 48px;
+  padding: 0px 20px;
   gap: 8px;
 }
 .box3 {
@@ -73,17 +71,14 @@
 }
 .box3 ul{
   margin: 0px;
-  padding: 6px;
+  padding: 4px;
   align-content: center;
   text-align: center;
 }
 .box3 a{
   text-decoration: none;
-  //font-style: none;
-  //color: black;
   color: #FFFFFF;
-  padding: 6px;
-
+  padding: 0px;
 }
 .box3 .aline{
   position: absolute;

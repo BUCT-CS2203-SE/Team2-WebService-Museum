@@ -75,8 +75,6 @@ body {
 
 
 .slidershow {
-  //width: 800px;
-  //height: 500px;
   width: 100%;
   height: 100%;
   overflow: hidden;
