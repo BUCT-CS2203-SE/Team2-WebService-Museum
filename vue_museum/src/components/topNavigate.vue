@@ -22,11 +22,7 @@
         <span class="aline"></span>
       </div>
       <div class="box3">
-        <ul><router-link class="nav-link" active-class="active" to="/userinfo">用户信息</router-link></ul>
-        <span class="aline"></span>
-      </div>
-      <div class="box3">
-        <ul><router-link class="nav-link" active-class="active" to="/tologout">注销</router-link></ul>
+        <ul><router-link class="nav-link" active-class="active" to="/userpage">用户信息</router-link></ul>
         <span class="aline"></span>
       </div>
     </div>
@@ -59,7 +55,7 @@
 .topnav .box2{
   display: grid;
   height: inherit;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   padding: 0px 20px;
   gap: 8px;
 }

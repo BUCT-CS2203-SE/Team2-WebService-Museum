@@ -72,4 +72,10 @@ public class ArtController {
         Boolean fav = Boolean.parseBoolean(info.get("fav"));
         return ResponseEntity.ok(Map.of("ans",rsce.changeFavRelic(rid, username, fav)));
     }
+    @PostMapping("/rehistory")
+    public ResponseEntity<Map<String,Object>> addRelicHistory(@RequestBody Map<String,String> info){
+        Long rid = Long.parseLong(info.get("rid"));
+        String username = info.get("username");
+        return ResponseEntity.ok(Map.of("ans",rsce.changeHistory(username, rid, false)));
+    }
 }

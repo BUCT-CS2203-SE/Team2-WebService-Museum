@@ -2,6 +2,7 @@ package com.example.museum.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,5 +51,25 @@ public class RelicSearchServiceImpl implements RelicSearchService {
             if(fav) rsmp.addFavRelic(uid, rid, LocalDateTime.now());
         }
         return true;
+    }
+    @Override
+    public List<Map<String,Object>> searchMyFavRelic(String username,String relicname,String time){
+        return rsmp.getUserFavRelic(username, relicname, time);
+    }
+    @Override
+    public Boolean changeHistory(String username,Long rid,Boolean del){
+        Long uid = muce.getIdByAccount(username);
+        Boolean has = rsmp.HasRelicHistory(uid, rid);
+        if(has){ //不存在历史
+            if(del) rsmp.delHistoryRelic(uid, rid); //删
+            else rsmp.updateHistoryRelic(uid, rid); //不删，更新
+        }else{ //存在历史
+            if(!del) rsmp.addHistoryRelic(uid, rid); //不删，新增
+        }
+        return true;
+    }
+    @Override
+    public List<Map<String,Object>> getUserHistory(String username,String relicname,String time){
+        return rsmp.getUserHistory(username, relicname, time);
     }
 }

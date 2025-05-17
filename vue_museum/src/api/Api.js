@@ -69,7 +69,16 @@ export default {
             /**post 请求参数：{id 文物id, username 用户名, fav bool值表示是否收藏}
              * @return ans true/false
             OK*/
+
             isFav: '/test/relic_isfav',
+            /**POST
+             * @send map
+             * username 用户名
+             * rid 文物id
+             * @return ans true/false
+             * 
+             */
+            rehistory: '/test/rehistory',
 
 
             /**时间轴界面Api要求，完成后标注0K*/
@@ -117,6 +126,57 @@ export default {
             /**post 请求参数：用户名，更新用户头像
              * avatar    头像图片地址  string类型 例如：'http://xxx.com/xxx.jpg'
                 */
+
+            /**POST 
+             * @send map字段
+             * username     用户名
+             * relicname    文物名
+             * time         截止时间
+             * @return list[map]
+             * map{id: 文物id, name: 文物名, time：收藏时间}
+             OK*/
+            getMyFav: "/user/myfav",
+
+            /**POST
+             * @send map字段
+             * username     用户名
+             * rid          文物id
+             * @return ans true/false
+             OK*/
+            delMyFav: "/user/disfav",
+
+            /**POST
+             * @send map字段
+             * username     用户名
+             * relicname    文物名称
+             * content      评论内容
+             * time         截止时间
+             * @return list[map]
+             * map{id: 评论id，rid：文物id， name：文物名称，content：评论内容，time：评论时间}
+             */
+            getMyComts: "/comments/mycomts",
+            /**POST
+             * @send map
+             * id  评论id
+             * @return ans true/false
+             */
+            delMyComts: "/comments/discomts",
+            /**POST
+             * @send map
+             * username     用户名
+             * relicname    文物名
+             * time         截止时间
+             * @return list[map]
+             * {id: 文物id, name: 文物名, time: 浏览时间}
+             */
+            getMyBrowser: "/user/browser",
+            /**POST
+             * @send
+             * username  用户名
+             * rid       文物di
+             * @retrun ans true/false
+             */
+            delMyBrowser: "/user/delbrowser"
         },comments:{
             /**post 请求参数：{id   文物id}
              * @return 返回参数

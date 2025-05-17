@@ -98,20 +98,22 @@ public class MyTest {
     //     System.out.println("Email Test Over");
     // }
 
-    // @Autowired
-    // private RelicSearchMapper rsmp;
-    // @Test
-    // void asd(){
-    //     // DetailVO ans = rsmp.getDetailInfo(2L);
-    //     // System.out.println("Get Info: "+ans);
-    //     // ObjectMapper mapper = new ObjectMapper();
-    //     // Map<String,Object> map = mapper.convertValue(ans, new TypeReference<>(){});
-    //     // System.out.println(map);
-    //     ArrayList<Object> li = new ArrayList<>(rsmp.getRelatedRelic(1L));
-    //     for(Object i : li){System.out.println(i.toString());}
-    //     // Boolean an = rsmp.delFavRelic(1L, 1L);
-    //     // System.out.println(an);
-    // }
+    @Autowired
+    private RelicSearchMapper rsmp;
+
+    @Test
+    void asd(){
+        // DetailVO ans = rsmp.getDetailInfo(2L);
+        // System.out.println("Get Info: "+ans);
+        // ObjectMapper mapper = new ObjectMapper();
+        // Map<String,Object> map = mapper.convertValue(ans, new TypeReference<>(){});
+        // System.out.println(map);
+        ArrayList<Object> li = new ArrayList<>(rsmp.getUserHistory("test",null,null));
+        for(Object i : li){System.out.println(i.toString());}
+        // Boolean an = cmmp.delByCommentsId(1L);
+        // System.out.println(an);
+        // rsmp.addHistoryRelic(1L, 1L);
+    }
 
     @Autowired
     private CommentsMapper cmmp;

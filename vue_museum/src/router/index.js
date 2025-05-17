@@ -38,11 +38,6 @@ const routes = [
     component: () => import('../views/KnowledgeMapView.vue'),
     meta: {public:true, hasNav: true}
   },{
-    path: '/userinfo',
-    name: 'userinfo',
-    component: () => import('../views/UserInfoView.vue'),
-    meta: {public:true, hasNav: true}
-  },{
     path: '/relic',
     name: 'RelicDetail',
     component: () => import('../views/RelicDetail.vue'),
@@ -59,16 +54,13 @@ const routes = [
       id: Number(route.query.id)
     }),
     meta: {public:true, hasNav: true}
-  },
-  {
-    path:'/tologout',
-    name: 'toLogout',
-    component: () => import('../components/toLogout.vue'),
-    props: (route) => ({
-      id: Number(route.query.id)
-    }),
+  },  { //用户信息管理
+    path:'/userpage',
+    name: 'userpage',
+    component: () => import('../views/UserPage.vue'),
     meta: {public:true, hasNav: true}
   }
+
 ]
 
 const router = createRouter({

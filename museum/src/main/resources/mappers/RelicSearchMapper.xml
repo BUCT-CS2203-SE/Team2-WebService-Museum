@@ -130,4 +130,61 @@
         ORDER BY score DESC
         LIMIT 20;
     </select>
+
+    <select id="getUserFavRelic">
+        SELECT 
+            a.id AS id,
+            a.Title AS name,
+            fr.addtime AS time
+        FROM 
+            fav_relic fr
+        JOIN app_user ap ON fr.uid = ap.id
+        JOIN art a ON fr.rid = a.id
+        <where>
+            ap.account = #{un}
+            
+            <if test="rn != null and rn != ''">
+            AND a.Title LIKE CONCAT('%', #{rn}, '%')
+            </if>
+            
+            <if test="ti != null and ti != ''">
+            AND fr.addtime &lt;= #{ti}
+            </if>
+        </where>
+        ORDER BY fr.addtime DESC
+    </select>
+
+    <select id="HasRelicHistory">
+        select count(*) from history_relic where uid = #{uid} and rid = #{rid}
+    </select>
+    <insert id="addHistoryRelic">
+        insert into history_relic(uid,rid) values(#{uid},#{rid})
+    </insert>
+    <update id="updateHistoryRelic">
+        UPDATE history_relic
+        SET addtime = NOW()
+        WHERE uid = #{uid} AND rid = #{rid}
+    </update>
+    <select id="getUserHistory">
+        SELECT 
+            a.id AS id,
+            a.Title AS name,
+            hr.addtime AS time
+        FROM 
+            history_relic hr
+        JOIN app_user ap ON hr.uid = ap.id
+        JOIN art a ON hr.rid = a.id
+        <where>
+            ap.account = #{un}
+            
+            <if test="rn != null and rn != ''">
+            AND a.Title LIKE CONCAT('%', #{rn}, '%')
+            </if>
+            
+            <if test="ti != null and ti != ''">
+            AND hr.addtime &lt;= #{ti}
+            </if>
+        </where>
+        ORDER BY hr.addtime DESC
+    </select>
 </mapper>

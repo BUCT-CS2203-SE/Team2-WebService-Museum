@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -65,4 +66,49 @@ public interface RelicSearchMapper {
      * @return List<Map<String,Object>>
      */
     List<Map<String,Object>> getRelatedRelic(@Param("id") Long id);
+    /**
+     * 模糊查询用户的所有收藏
+     * @param username 用户名具体值
+     * @param relicname 文物名模糊查询，可能为null
+     * @param time  截止时间，可能为null
+     * @return List
+     */
+    List<Map<String,Object>> getUserFavRelic(@Param("un")String username,@Param("rn")String relicname,@Param("ti") String time);
+    /**
+     * 判断是否存在浏览历史
+     * @param uid 用户id
+     * @param rid 文物id
+     * @return bool
+     */
+    Boolean HasRelicHistory(@Param("uid")Long uid,@Param("rid")Long rid);
+    /**
+     * 添加浏览历史
+     * @param uid 用户id
+     * @param rid 文物id
+     * @return bool
+     */
+    Boolean addHistoryRelic(@Param("uid")Long uid,@Param("rid")Long rid);
+    /**
+     * 更新浏览时间
+     * @param uid 用户id
+     * @param rid 文物id
+     * @return bool
+     */
+    Boolean updateHistoryRelic(@Param("uid")Long uid,@Param("rid")Long rid);
+    /**
+     * 删除记录
+     * @param uid 用户id
+     * @param rid 文物id
+     * @return bool
+     */
+    @Delete("delete from history_relic where uid = #{uid} and rid = #{rid}")
+    Boolean delHistoryRelic(@Param("uid")Long uid,@Param("rid")Long rid);
+    /**
+     * 模糊查找用户记录
+     * @param username 用户名
+     * @param relicname 文物名
+     * @param time 截止时间
+     * @return list
+     */
+    List<Map<String,Object>> getUserHistory(@Param("un")String username,@Param("rn")String relicname,@Param("ti")String time);
 }
