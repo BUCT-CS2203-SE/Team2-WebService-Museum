@@ -16,7 +16,6 @@
 
 <script setup>
 import { ref, watch, defineProps } from 'vue'
-import logo from '@/assets/logo.png'
 import { useRouter } from 'vue-router'
 import { message } from 'ant-design-vue'
 /**组件传入参数
@@ -40,7 +39,7 @@ watch(() => props.src, (newSrc) => {
 // 图片加载失败时，使用默认失败图
 const onImgError = () => {
   message.error("加载图片失败!");
-  imgSrc.value = logo; // 替换为你项目中存在的默认图路径
+  imgSrc.value = '/img/photo/photo_default586x426.png'; // 替换为你项目中存在的默认图路径
 }
 const router = useRouter();
 // 点击当前项，跳转并传递数字型 id

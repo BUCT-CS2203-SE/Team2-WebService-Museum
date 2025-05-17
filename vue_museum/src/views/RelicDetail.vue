@@ -50,7 +50,8 @@
         <p v-if="relic.scale" class="info-era">规模参数： {{ relic.scale }}</p>
         <div class="info-desc">
           <h3>详细介绍</h3>
-          <p>{{ relic.description }}</p>
+          <p v-if="relic.description">{{ relic.description }}</p>
+          <p v-else>暂无信息</p>
         </div>
       </div>
 
