@@ -269,7 +269,7 @@ a {
 .login-card {
   position: relative;
   z-index: 1;
-  width: 320px;
+  width: 25%;
   padding: 30px;
   background: rgba(255,255,255,0.1);
   border-radius: 12px;
