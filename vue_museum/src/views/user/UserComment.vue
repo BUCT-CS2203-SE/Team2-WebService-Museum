@@ -69,6 +69,7 @@ async function OnCilck(){
             content: conten.value,
             time: ti.value
         })
+        message.success("请求成功")
     }catch(error){
         message.error("请求收藏失败")
     }
