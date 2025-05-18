@@ -9,7 +9,6 @@
       <div class="control-container">
 
         <div class="controls">
-<!--          <textarea v-model="cypher" rows="4" cols="50"></textarea><br>-->
           <button @click="reload">Query</button>
           <button @click="stabilize">Stabilize</button>
         </div>
@@ -17,43 +16,35 @@
       </div>
 
       <div class="selects-container">
-
-        <select v-model="selected1">
+        <p>节点类型</p>
+        <select v-model="selected1" >
           <option v-for="option in firstOptions" :key="option" :value="option.value">
             {{ option.text }}
           </option>
         </select>
 
+        <input v-model="selected4" placeholder="名称" />
+
+        <p>关系类型</p>
         <select v-model="selected2">
           <option v-for="option in secondOptions" :key="option" :value="option.value">
             {{ option.text }}
           </option>
         </select>
 
+
+
+        <p>节点类型</p>
         <select v-model="selected3">
           <option v-for="option in thirdOptions" :key="option" :value="option.value">
             {{ option.text }}
           </option>
         </select>
 
-      </div>
-      <div class="selects-container">
-
-
-        <select v-model="selected4">
-          <option v-for="option in fourthOptions" :key="option" :value="option.value">
-            {{ option.text }}
-          </option>
-        </select>
-
-        <select v-model="selected5">
-          <option v-for="option in fifthOptions" :key="option" :value="option.value">
-            {{ option.text }}
-          </option>
-        </select>
-
+        <input v-model="selected5" placeholder="名称" />
 
       </div>
+
     </div>
 
   </div>
@@ -70,15 +61,14 @@ import NeoVis from 'neovis.js';
 const cypher = computed(() => {
   // label是类别,name是名称
   const label1 = selected1.value ? `:${selected1.value}` : '';
-  const name1 = selected4.value ? `{name:${selected4.value}}` : '';
+  const name1 = selected4.value ? `{name:"${selected4.value}"}` : '';
   const node1 = (selected1.value || selected4.value || selected2.value) ? `(n${label1} ${name1})` : ''
 
   // 关系
   const relation = selected2.value ? `-[r:${selected2.value}]->` : '';
 
   const label2 = selected3.value ? `:${selected3.value}` : '';
-  const name2 = selected5.value ? `{name:${selected5.value}}` : '';
-  //const node2 = (selected3.value||selected5.value) ? `(m${label2} ${name2})` : '';
+  const name2 = selected5.value ? `{name:"${selected5.value}"}` : '';
   const node2 = (selected3.value || selected5.value || selected2.value) ? `(m${label2} ${name2})` : ''
 
   //返回的 n,r,m
@@ -93,7 +83,7 @@ const cypher = computed(() => {
   return `
     MATCH ${node1}${relation}${node2}
     RETURN ${cyReturn}
-    LIMIT 60
+    LIMIT 200
   `
 })
 
@@ -136,26 +126,15 @@ const thirdOptions = ref([
   {text: '时期', value: 'Time'}
 ])
 
-const fourthOptions = ref([
-  {text: '', value: ''},
-  // { text: '中式鼻烟壶', value: '中式鼻烟壶' }
-])
-
-const fifthOptions = ref([
-  {text: '', value: ''},
-  // { text: '罗汉头像', value: '罗汉头像' }
-])
 
 const config = ref({
 
   containerId: "viz",
-
   neo4j: {
     serverUrl: "bolt://localhost:7687",
     serverUser: "neo4j",
     serverPassword: "Cs22032025",
   },
-
   visConfig: {
     nodes: {
       shape: "ellipse",
@@ -186,7 +165,6 @@ const config = ref({
     layout: {
       improvedLayout: true
     },
-
   },
   labels: {
     Artifact: {
@@ -308,7 +286,8 @@ const config = ref({
     }
   },
 
-  initialCypher: "MATCH (n)-[r]->(m) RETURN n,r,m LIMIT 20",
+  // initialCypher: "MATCH (n)-[r]->(m) RETURN n,r,m LIMIT 20",
+  initialCypher: "MATCH (n)-[r]->(m) RETURN n,r,m limit 300",
   // initialCypher: "MATCH (n:Artifact) RETURN n LIMIT 20",
 });
 
@@ -412,7 +391,8 @@ const stabilize = () => {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 
   display: flex;
-  flex-direction: row;
+  //flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
 }
@@ -446,12 +426,31 @@ button:hover {
 }
 
 select {
-  margin: 0 5px;
+  margin: 5px 5px;
   /* 左右间距改为水平方向的间距 */
   padding: 8px;
-  width: 30%;
+  //width: 30%;
+  width: 100%;
   /* 设置宽度为30%，使三个select平均分布 */
   border-radius: 4px;
   border: 1px solid #ddd;
 }
+
+input {
+  margin: 5px 5px;
+  padding: 8px;
+  width: 100%;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+p {
+  margin: 5px 5px;
+  display: flex;
+  align-items: center; /* 垂直居中 */
+  justify-content: flex-start; /* 水平靠左 */
+  font-size: smaller; /* 文字变小 */
+  color: #aaa; /* 文字颜色变淡 */
+}
+
 </style>
