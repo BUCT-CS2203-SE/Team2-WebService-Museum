@@ -95,7 +95,9 @@ public class MyTest {
     // @Test
     // void email_test() throws Exception{
     //     emce.sendCode("3309296020@qq.com");
-    //     System.out.println("Email Test Over");
+    //     // Boolean ans = emce.verifyCode("3309296020@qq.com", "cc8317");
+    //     // System.out.println(ans);
+    //     System.out.println("Email Test Over");        
     // }
 
     @Autowired
