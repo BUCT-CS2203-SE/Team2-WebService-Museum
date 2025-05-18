@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 绑定到指定接口 --> 
+<mapper namespace="com.example.museum.mapper.UserMapper">
+
+    <select id="selectByUsername" resultType="com.example.museum.model.AppUser">
+        SELECT account,email,avatar
+        FROM app_user 
+        WHERE account = #{account}
+    </select>
+
+    <update id="updateUserInfo">
+        UPDATE app_user
+        <set>
+            <if test="password != null">password = #{password},</if>
+            <if test="email != null">email = #{email}</if>
+        </set>
+        WHERE account = #{account}
+    </update>
+
+    <update id="updateAvatar">
+        UPDATE app_user
+        SET avatar = #{avatar}
+        WHERE account = #{account}
+    </update>
+
+</mapper>
