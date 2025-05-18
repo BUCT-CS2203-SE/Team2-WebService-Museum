@@ -4,7 +4,7 @@
         <div class="but-box">
            <InputButton v-model="name" placeholder="文物名称："/> 
            <DateInput v-model="ti" label="浏览时间"/>
-           <SmoothButton label="查询"/>
+           <SmoothButton label="查询" @click="OnCilck"/>
         </div>
         <MyTable :data="myFav" :columns="colName" action-key="time" @view="handleView" @delete="handleDelete" />
         
@@ -65,6 +65,7 @@ async function OnCilck(){
             relicname: name.value,
             time: ti.value
         })
+        message.success("请求成功")
     }catch(error){
         message.error("请求收藏失败")
     }

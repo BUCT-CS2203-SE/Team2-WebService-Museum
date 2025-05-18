@@ -67,7 +67,6 @@ public class AuthController {
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             nowAccount, creds.get("password"))); // 执行认证
-            System.out.println("\n Now Here\n");
             String token = Jwts.builder()
                     .setSubject(auth.getName())
                     .setIssuedAt(Date.from(Instant.now()))

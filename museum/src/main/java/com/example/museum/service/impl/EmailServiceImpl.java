@@ -11,8 +11,9 @@ import javax.naming.directory.InitialDirContext;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,9 @@ import com.example.museum.config.CodeGenerator;
 import com.example.museum.mapper.VerificationCodeMapper;
 import com.example.museum.model.VerificationCode;
 import com.example.museum.service.EmailService;
+
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
 @Service
 @Transactional
@@ -34,14 +38,51 @@ public class EmailServiceImpl implements EmailService {
     String Mailfrom;
 
     @Override
-    public void sendVerificationEmail(String to, String code){
-        SimpleMailMessage msg = new SimpleMailMessage();
-        msg.setFrom(Mailfrom);
-        msg.setTo(to);
-        msg.setSubject("【海外文物知识服务子系统】邮箱验证码");
-        msg.setText("您的登录验证码为：[ " + code + " ] , 10 分钟内有效。");
-        mailSender.send(msg);  
+    public void sendVerificationEmail(String to, String code) {
+        try {
+            MimeMessage mimeMsg = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMsg, true, "UTF-8");
+
+            helper.setFrom(Mailfrom);
+            helper.setTo(to);
+            helper.setSubject("【海外文物知识服务子系统】邮箱验证码");
+
+            String html = """
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                      <meta charset="UTF-8">
+                      <style>
+                        .container { font-family: Arial, sans-serif; padding: 20px; }
+                        .code { display: inline-block; padding: 10px 20px;
+                                font-size: 24px; color: #ffffff; background-color: #007bff;
+                                border-radius: 4px; margin: 10px 0; }
+                        .footer { font-size: 12px; color: #888888; margin-top: 20px; }
+                      </style>
+                    </head>
+                    <body>
+                      <div class="container">
+                        <h2>验证码通知</h2>
+                        <p>您好，您本次操作的邮箱验证码为：</p>
+                        <div class="code">
+                    """ // 关闭文本块
+                    + code // 拼接变量
+                    + """
+                                </div>
+                                <p>此验证码 10 分钟内有效，请勿泄露给他人。</p>
+                                <div class="footer">如果这不是您本人操作，请忽略此邮件。</div>
+                              </div>
+                            </body>
+                            </html>
+                            """; // 重新打开并关闭文本块
+            helper.setText(html, true);
+            mailSender.send(mimeMsg);
+        } catch (MessagingException e) {
+            // 记录日志或抛出自定义异常
+            throw new MailSendException("发送验证码邮件失败", e);
+        }
     }
+
     @Override
     public void sendCode(String email) throws Exception{
         String code = CodeGenerator.generate(6);
