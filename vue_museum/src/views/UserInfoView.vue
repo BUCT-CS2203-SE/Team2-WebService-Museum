@@ -46,18 +46,7 @@
         <a-input-password v-model:value="formState.confirmPassword" />
       </a-form-item>
 
-      <!-- <a-form-item label="真实姓名" name="realName">
-        <a-input v-model:value="formState.realName" />
-      </a-form-item>
-
-      <a-form-item label="证件号码" name="idNumber">
-        <a-input v-model:value="formState.idNumber" />
-      </a-form-item> -->
-
-      <a-form-item label="手机号码" name="phone">
-        <a-input v-model:value="formState.phone" />
-      </a-form-item>
-
+     
       <a-form-item label="电子邮箱" name="email">
         <a-input v-model:value="formState.email" />
       </a-form-item>
@@ -86,86 +75,10 @@ const formState = reactive({
   username: '', 
   password: '',
   confirmPassword: '',
-  // realName: '',
-  // idNumber: '',
-  phone: '',
   email: '',
   avatar: '',
 });
 
-//以下是测试用，实际使用时要注释
-// const generateMockUserData = () => {
-//   return {
-//     username: 'testuser',
-//     realName: '张三',
-//     idNumber: '320123199001011234',
-//     phone: '13800138000',
-//     email: 'test@example.com',
-//     avatar: 'https://randomuser.me/api/portraits/men/1.jpg'
-//   };
-// };
-
-// // 模拟获取用户信息的函数
-// const fetchUserProfile = async () => {
-//   try {
-//     loading.value = true;
-//     // 模拟网络延迟
-//     await new Promise(resolve => setTimeout(resolve, 500));
-    
-//     // 使用Mock数据替代API调用
-//     const userData = generateMockUserData();
-    
-//     Object.assign(formState, {
-//       username: userData.username,
-//       realName: userData.realName,
-//       idNumber: userData.idNumber,
-//       phone: userData.phone,
-//       email: userData.email,
-//       avatar: userData.avatar
-//     });
-    
-//   } catch (error) {
-//     console.error('获取用户信息失败:', error);
-//     message.error('获取用户信息失败');
-//   } finally {
-//     loading.value = false;
-//   }
-// };
-
-// // 模拟保存用户信息的函数
-// const saveUserProfile = async (data) => {
-//   try {
-//     // 模拟网络延迟
-//     await new Promise(resolve => setTimeout(resolve, 800));
-//     console.log('模拟保存数据:', data);
-//     return { success: true };
-//   } catch (error) {
-//     throw new Error('保存失败');
-//   }
-// };
-
-// // 更新表单提交函数
-// const onFinish = async (values) => {
-//   try {
-//     const submitData = {
-//       username: values.username,
-//       password: values.password,
-//       realName: values.realName,
-//       idNumber: values.idNumber,
-//       phone: values.phone,
-//       email: values.email,
-//       avatar: values.avatar
-//     };
-    
-//     // 使用Mock保存函数替代API调用
-//     await saveUserProfile(submitData);
-//     message.success('个人信息更新成功（模拟）');
-//   } catch (error) {
-//     message.error('更新失败: ' + error.message);
-//   }
-// };
-//以上是测试用，实际使用时要注释
-//以下是测试时注释，实际使用时取消注释
 
 // 表单验证规则（保持不变）
 const rules = {
@@ -185,18 +98,7 @@ const rules = {
       trigger: 'blur',
     }),
   ],
-  // realName: [
-  //   { required: true, message: '请输入真实姓名', trigger: 'blur' },
-  //   { pattern: /^[\u4e00-\u9fa5]{2,10}$/, message: '请输入2-10位中文姓名', trigger: 'blur' },
-  // ],
-  // idNumber: [
-  //   { required: true, message: '请输入证件号码', trigger: 'blur' },
-  //   { pattern: /^\d{17}[\dXx]$/, message: '请输入正确的证件号码', trigger: 'blur' },
-  // ],
-  phone: [
-    { required: true, message: '请输入手机号码', trigger: 'blur' },
-    { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号码', trigger: 'blur' },
-  ],
+ 
   email: [
     { required: true, message: '请输入电子邮箱', trigger: 'blur' },
     { type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' },
@@ -207,17 +109,15 @@ const rules = {
 const fetchUserProfile = async () => {
   try {
     loading.value = true;
-    const response = await axios.get(api.url.user.getInfo,{username:"test"}); 
+    const response = await axios.get(api.url.user.getInfo,{params:{username:"user"}}); 
     const userData = response.data;
     
     // 将接口数据映射到表单
     Object.assign(formState, {
-      username: userData.nickname,
-      // realName: userData.realName,
-      // idNumber: userData.idNumber,
-      phone: userData.phone,
+      username: userData.username,
+      
       email: userData.email,
-      avatar: userData.img_url || 'https://randomuser.me/api/portraits/men/1.jpg', // 默认头像
+      avatar: userData.avatar || 'https://randomuser.me/api/portraits/men/1.jpg', // 默认头像
     });
     
   } catch (error) {
@@ -272,9 +172,7 @@ const onFinish = async (values) => {
     const submitData = {
       username: values.username,
       password: values.password,
-      // realName: values.realName,
-      // idNumber: values.idNumber,
-      phone: values.phone,
+      
       email: values.email,
       avatar: values.avatar
     };
