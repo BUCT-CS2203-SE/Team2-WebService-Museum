@@ -48,6 +48,15 @@ public class ArtController {
         return artMapper.findTimelineData();
     }
 
+
+    @PostMapping("/timelineinfo")
+    public List<Map<String, Object>> getTimelineInfo(@RequestBody Map<String, Integer> range) {
+        int sta = range.getOrDefault("sta", 0);
+        int end = range.getOrDefault("end", 3000);
+        return artMapper.findArtInDateRange(sta, end);
+    }
+
+
     @Autowired
     private RelicSearchService rsce;
 

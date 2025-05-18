@@ -1,6 +1,9 @@
 package com.example.museum.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 
 @NoArgsConstructor
@@ -15,4 +18,6 @@ public class AppUser {
     private String avatar;
     private Boolean isFrozen = false;
     private Boolean isAdmin = false;
+
+    
 }

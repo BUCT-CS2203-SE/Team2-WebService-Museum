@@ -2,8 +2,10 @@ package com.example.museum.mapper;
 
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import com.example.museum.dto.ArtDTO;
@@ -63,4 +65,36 @@ public interface ArtMapper {
     """)
     List<ArtDTO> findTimelineData();
     
+
+
+    @Select("""
+    SELECT a.id, a.ImgUrl AS src, a.Title
+    FROM art a
+    WHERE a.Dynasty IS NOT NULL AND a.Dynasty != ''
+      AND (
+        CASE
+            WHEN a.Dynasty LIKE '%公元前%' THEN 
+                -CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(
+                    SUBSTRING(a.Dynasty, LOCATE('（', a.Dynasty) + 1, LOCATE('）', a.Dynasty) - LOCATE('（', a.Dynasty) - 1),
+                '-', 1), '前', -1) AS SIGNED)
+            ELSE 
+                CAST(SUBSTRING_INDEX(
+                    SUBSTRING(a.Dynasty, LOCATE('（', a.Dynasty) + 1, LOCATE('）', a.Dynasty) - LOCATE('（', a.Dynasty) - 1),
+                '-', 1) AS SIGNED)
+        END
+      ) >= #{sta}
+      AND (
+        CASE
+            WHEN a.Dynasty LIKE '%公元前%' THEN 
+                -CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(
+                    SUBSTRING(a.Dynasty, LOCATE('（', a.Dynasty) + 1, LOCATE('）', a.Dynasty) - LOCATE('（', a.Dynasty) - 1),
+                '-', -1), '前', -1) AS SIGNED)
+            ELSE 
+                CAST(SUBSTRING_INDEX(
+                    SUBSTRING(a.Dynasty, LOCATE('（', a.Dynasty) + 1, LOCATE('）', a.Dynasty) - LOCATE('（', a.Dynasty) - 1),
+                '-', -1) AS SIGNED)
+        END
+      ) <= #{end}
+    """)
+    List<Map<String, Object>> findArtInDateRange(@Param("sta") int sta, @Param("end") int end);
 }
