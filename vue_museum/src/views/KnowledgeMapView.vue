@@ -9,50 +9,42 @@
       <div class="control-container">
 
         <div class="controls">
-          <textarea v-model="cypher" rows="4" cols="50"></textarea><br>
-          <button @click="reload">Submit</button>
+          <button @click="reload">Query</button>
           <button @click="stabilize">Stabilize</button>
         </div>
 
       </div>
 
       <div class="selects-container">
-
-        <select v-model="selected1">
+        <p>节点类型</p>
+        <select v-model="selected1" >
           <option v-for="option in firstOptions" :key="option" :value="option.value">
             {{ option.text }}
           </option>
         </select>
 
+        <input v-model="selected4" placeholder="名称" />
+
+        <p>关系类型</p>
         <select v-model="selected2">
           <option v-for="option in secondOptions" :key="option" :value="option.value">
             {{ option.text }}
           </option>
         </select>
 
+
+
+        <p>节点类型</p>
         <select v-model="selected3">
           <option v-for="option in thirdOptions" :key="option" :value="option.value">
             {{ option.text }}
           </option>
         </select>
 
-      </div>
-      <div class="selects-container">
-
-        <select v-model="selected4">
-          <option v-for="option in fourthOptions" :key="option" :value="option.value">
-            {{ option.text }}
-          </option>
-        </select>
-
-        <select v-model="selected5">
-          <option v-for="option in fifthOptions" :key="option" :value="option.value">
-            {{ option.text }}
-          </option>
-        </select>
-
+        <input v-model="selected5" placeholder="名称" />
 
       </div>
+
     </div>
 
   </div>
@@ -69,15 +61,14 @@ import NeoVis from 'neovis.js';
 const cypher = computed(() => {
   // label是类别,name是名称
   const label1 = selected1.value ? `:${selected1.value}` : '';
-  const name1 = selected4.value ? `{name:${selected4.value}}` : '';
+  const name1 = selected4.value ? `{name:"${selected4.value}"}` : '';
   const node1 = (selected1.value || selected4.value || selected2.value) ? `(n${label1} ${name1})` : ''
 
   // 关系
   const relation = selected2.value ? `-[r:${selected2.value}]->` : '';
 
   const label2 = selected3.value ? `:${selected3.value}` : '';
-  const name2 = selected5.value ? `{name:${selected5.value}}` : '';
-  //const node2 = (selected3.value||selected5.value) ? `(m${label2} ${name2})` : '';
+  const name2 = selected5.value ? `{name:"${selected5.value}"}` : '';
   const node2 = (selected3.value || selected5.value || selected2.value) ? `(m${label2} ${name2})` : ''
 
   //返回的 n,r,m
@@ -92,7 +83,7 @@ const cypher = computed(() => {
   return `
     MATCH ${node1}${relation}${node2}
     RETURN ${cyReturn}
-    LIMIT 60
+    LIMIT 200
   `
 })
 
@@ -135,26 +126,15 @@ const thirdOptions = ref([
   {text: '时期', value: 'Time'}
 ])
 
-const fourthOptions = ref([
-  {text: '', value: ''},
-  // { text: '中式鼻烟壶', value: '中式鼻烟壶' }
-])
-
-const fifthOptions = ref([
-  {text: '', value: ''},
-  // { text: '罗汉头像', value: '罗汉头像' }
-])
 
 const config = ref({
 
   containerId: "viz",
-
   neo4j: {
     serverUrl: "bolt://localhost:7687",
     serverUser: "neo4j",
     serverPassword: "Cs22032025",
   },
-
   visConfig: {
     nodes: {
       shape: "ellipse",
@@ -166,19 +146,25 @@ const config = ref({
       //   to: { enabled: true }
       // }
     },
+    physics: {
+      enabled: true, // 启用物理效果
+      barnesHut: {
+        gravitationalConstant: -3000, // 引力常数，负值表示斥力
+        centralGravity: 0.3,     // 向中心的引力
+        springLength: 95,        // 弹簧自然长度
+        // springConstant: 0.04,    // 弹簧常数
+        springConstant: 0.01,
+        // damping: 0.09           // 阻尼系数
+        damping: 0.29           // 阻尼系数
+      },
+      stabilization: {
+        iterations: 1000,        // 稳定化迭代次数
+        updateInterval: 50       // 更新间隔
+      }
+    },
     layout: {
       improvedLayout: true
     },
-    //树状图
-    // layout: {
-    //   hierarchical: {
-    //     enabled: true,
-    //     // 严格按照父子关系划分
-    //     // sortMethod: 'directed'
-    //   }
-    // }
-
-
   },
   labels: {
     Artifact: {
@@ -252,7 +238,6 @@ const config = ref({
     }
   },
 
-
   relationships: {
     "位于": {
       // value: "weight",
@@ -301,12 +286,13 @@ const config = ref({
     }
   },
 
-
-  initialCypher: "MATCH (n)-[r]->(m) RETURN n,r,m LIMIT 30",
+  // initialCypher: "MATCH (n)-[r]->(m) RETURN n,r,m LIMIT 20",
+  initialCypher: "MATCH (n)-[r]->(m) RETURN n,r,m limit 300",
+  // initialCypher: "MATCH (n:Artifact) RETURN n LIMIT 20",
 });
 
 
-const initialNodeIds = ref(new Set());
+// const initialNodeIds = ref(new Set());
 const expandedNodes = ref(new Set());
 
 let vis = null;
@@ -314,52 +300,22 @@ onMounted(() => {
   vis = new NeoVis(config.value)
   vis.render();
 
-
-  // // 监听初始渲染完成事件，记录初始节点
-  // vis.registerOnEvent("completed", (e) => {
-  //   const network = vis.network;
-  //   // 使用 vis.js 网络的原生事件监听稳定状态
-  //   network.on("stabilizationIterationsDone", () => {
-  //     const nodes = network.body.data.nodes;
-  //     // 更新展开节点集合，只保留当前存在的节点
-  //     expandedNodes.value = new Set(
-  //         Array.from(expandedNodes.value).filter(id => nodes.get(id) !== undefined)
-  //     );
-  //   });
-  // });
-
-
-  // 注册节点点击展开事件
-
   vis.registerOnEvent("clickNode", (properties) => {
-    const nodeId = properties.nodeId;
-    if (expandedNodes.value.has(nodeId)) {
-      // 如果节点已展开，则收起
-      expandedNodes.value.delete(nodeId);
-      // const expandedNodesArray = Array.from(expandedNodes.value);
 
-      // 确保保留初始节点
-      const finalNodes = new Set([...initialNodeIds.value, ...expandedNodes.value]);
-      const cypher = `
-        MATCH (n)-[r]-(m)
-        WHERE ID(n) IN [${Array.from(finalNodes).join(',')}]
-        RETURN n,r,m LIMIT 60
-      `;
-      vis.updateWithCypher(cypher);
-    } else {
+    const nodeId = properties.nodeId;
+    if (!expandedNodes.value.has(nodeId)) {
 
       // 如果节点未展开，则展开
       expandedNodes.value.add(nodeId);
-      const finalNodes = new Set([...initialNodeIds.value, ...expandedNodes.value]);
-      const cypher = `
+      // const finalNodes = new Set([ ...expandedNodes.value]);
+      const cypher3 = `
         MATCH (n)-[r]-(m)
-        WHERE ID(n) IN [${Array.from(finalNodes).join(',')}]
-        RETURN n,r,m LIMIT 60
+        WHERE ID(n) IN [${properties.nodeId}]
+        RETURN n,r,m LIMIT 20
       `;
-      vis.updateWithCypher(cypher);
+      vis.updateWithCypher(cypher3);
     }
   });
-
 
 });
 
@@ -384,7 +340,6 @@ const stabilize = () => {
 <style scoped>
 #viz {
   width: 100%;
-  height: 95vh;
   border: 1px solid #ddd;
   border-radius: 8px;
 }
@@ -396,11 +351,12 @@ const stabilize = () => {
   /* 设置主轴方向为水平 */
   gap: 20px;
   /* 设置子元素之间的间距 */
-  min-height: 95vh;
-  height: auto;
+  //height: 100%;
+  height: 92vh;
   /* 设置容器高度为视口高度 */
   padding: 10px;
   /* 设置内边距 */
+
 }
 
 .container {
@@ -409,6 +365,9 @@ const stabilize = () => {
   border-radius: 20px;
   padding: 15px;
   width: 25%;
+  height: auto;
+  bottom: 0;
+
 }
 
 .control-container {
@@ -432,7 +391,8 @@ const stabilize = () => {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 
   display: flex;
-  flex-direction: row;
+  //flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
 }
@@ -466,12 +426,31 @@ button:hover {
 }
 
 select {
-  margin: 0 5px;
+  margin: 5px 5px;
   /* 左右间距改为水平方向的间距 */
   padding: 8px;
-  width: 30%;
+  //width: 30%;
+  width: 100%;
   /* 设置宽度为30%，使三个select平均分布 */
   border-radius: 4px;
   border: 1px solid #ddd;
 }
+
+input {
+  margin: 5px 5px;
+  padding: 8px;
+  width: 100%;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+p {
+  margin: 5px 5px;
+  display: flex;
+  align-items: center; /* 垂直居中 */
+  justify-content: flex-start; /* 水平靠左 */
+  font-size: smaller; /* 文字变小 */
+  color: #aaa; /* 文字颜色变淡 */
+}
+
 </style>

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.museum.config.CodeGenerator;
 import com.example.museum.mapper.VerificationCodeMapper;
@@ -21,6 +22,7 @@ import com.example.museum.model.VerificationCode;
 import com.example.museum.service.EmailService;
 
 @Service
+@Transactional
 public class EmailServiceImpl implements EmailService {
     //有效时间10分钟
     private static final int EXPIRE_MINUTES = 10;
