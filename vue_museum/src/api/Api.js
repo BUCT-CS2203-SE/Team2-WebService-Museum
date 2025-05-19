@@ -18,11 +18,11 @@ export default {
         /**以下是后端需要返回数据的路径(''之间是路径),后端负责人完成后将这里的信息标注为OK */
         relic: {
             /**get 请求参数：无，需要返回文物的所有类别如瓷器等，返回类型list OK*/
-            types: '/test/relic_types',
+            types: '/relic/relic_types',
             /**get 请求参数：无，需要返回文物朝代信息，如新石器时代、宋代等，返回类别list OK*/
-            times: '/test/relic_times',
+            times: '/relic/relic_times',
             /**get 请求参数：无，需要返回文物现所在博物馆信息，如大英博物馆，返回类别list OK*/
-            museums: '/test/relic_museums',
+            museums: '/relic/relic_museums',
 
             /**post 请求参数以下：
              *  类型map
@@ -43,7 +43,7 @@ export default {
              *  title 文物名
              * }        文物数据
              OK*/
-            search: '/test/relic_search',
+            search: '/relic/relic_search',
 
             /**post 请求参数：{id 文物id, username 用户名}
              * @return 返回数据结构
@@ -64,13 +64,13 @@ export default {
              *    id    文物ID
              *  }
               OK*/
-            detail: '/test/relic_detail',
+            detail: '/AuthRelic/relic_detail',
 
             /**post 请求参数：{id 文物id, username 用户名, fav bool值表示是否收藏}
              * @return ans true/false
             OK*/
 
-            isFav: '/test/relic_isfav',
+            isFav: '/AuthRelic/relic_isfav',
             /**POST
              * @send map
              * username 用户名
@@ -78,7 +78,7 @@ export default {
              * @return ans true/false
              * 
              */
-            rehistory: '/test/rehistory',
+            rehistory: '/AuthRelic/rehistory',
 
 
             /**时间轴界面Api要求，完成后标注0K*/
@@ -90,7 +90,7 @@ export default {
                  * dynasty   文物朝代       string类型 例如：'汉代'
                  * dateRange 文物年代范围   string类型 例如：'约1100年-1200年'
                  */
-                data: '/test/timeline',
+                data: '/relic/timeline',
 
                 /**Post 请求参数{sta: 开始年份, end: 结束年份} 
                  * @returns 返回数据结构：list[ map ]
@@ -100,7 +100,7 @@ export default {
                  *  title   文物名称
                  }
                 */
-                info:'/test/timelineinfo'
+                info:'/relic/timelineinfo'
             }
         },
 
@@ -154,13 +154,13 @@ export default {
              * @return list[map]
              * map{id: 评论id，rid：文物id， name：文物名称，content：评论内容，time：评论时间}
              */
-            getMyComts: "/comments/mycomts",
+            getMyComts: "/user/mycomts",
             /**POST
              * @send map
              * id  评论id
              * @return ans true/false
              */
-            delMyComts: "/comments/discomts",
+            delMyComts: "/user/discomts",
             /**POST
              * @send map
              * username     用户名

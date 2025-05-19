@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.museum.mapper.UserMapper;
 import com.example.museum.model.AppUser;
+import com.example.museum.service.CommentsService;
 import com.example.museum.service.RelicSearchService;
 
 @RestController
@@ -194,5 +195,22 @@ public ResponseEntity<?> sendInfo(@RequestBody Map<String, String> userInfo) {
         String username = info.get("username");
         Long rid = Long.parseLong(info.get("rid"));
         return Map.of("ans",rsce.changeHistory( username,rid, true));
+    }
+
+    @Autowired
+    private CommentsService csce;
+    
+    @PostMapping("/mycomts")
+    public ResponseEntity<List<Map<String,Object>>> getUserComments(@RequestBody Map<String,String> info){
+        String uname = info.get("username");
+        String rname = info.get("relicname");
+        String cont = info.get("content");
+        String ti = info.get("time");
+        return ResponseEntity.ok(csce.getUserComments(uname, rname, cont, ti));
+    }
+    @PostMapping("/discomts")
+    public ResponseEntity<Map<String,Object>> DelComments(@RequestBody Map<String,String> info){
+        Long id = Long.parseLong(info.get("id"));
+        return ResponseEntity.ok(Map.of("ans",csce.delUserCommentsById(id)));
     }
 }

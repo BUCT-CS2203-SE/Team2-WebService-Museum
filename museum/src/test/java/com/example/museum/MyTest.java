@@ -81,11 +81,11 @@ public class MyTest {
     // }
     // @Test
     // void test2(){
-    //     // apmr.deleteById(5L);
-    //     AppUser user = myce.findByAccount("test1");
-    //     user.setPassword("1234");
-    //     myce.updateOneUser(user);
-    //     System.out.println(user);
+    //     myce.deleteById(6L);
+        // AppUser user = myce.findByAccount("test1");
+        // user.setPassword("1234");
+        // myce.updateOneUser(user);
+        // System.out.println(user);
     // }
 
     // @Autowired
