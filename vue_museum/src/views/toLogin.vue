@@ -104,6 +104,7 @@ import service from '@/utils/request';
 import { useRouter } from 'vue-router';
 import countDownButton from '@/components/countDownButton.vue';
 import Api from '@/api/Api';
+import { message } from 'ant-design-vue';
 
 const useAcc = ref(true); //采用何种方式登录，默认账号
 function switchWay(){
@@ -137,8 +138,9 @@ async function onSubmit() {
     let ac = u.value;
     if(!useAcc.value) ac = uemail.value;
     const data = await service.post(Api.url.login, {way:useAcc.value, user: ac.trim(), password: p.value.trim() });
-    if(data.data.status === 401) {alert(data.data.message);return ;}
-    alert("登录成功!");
+    if(data.status !== 200) {message.error(data.data.message);return ;}
+
+    //保存用户信息
     localStorage.setItem('jwt', data.data.token);
     localStorage.setItem('username',data.data.username);
     if(data.data.avatar !== null) localStorage.setItem('avatar',data.data.avatar);
@@ -146,7 +148,10 @@ async function onSubmit() {
     // 登录动作中
     console.log("保存成功："+data.data.token+ "username: "+data.data.username);
     //登陆成功跳转路径
-    router.push('/');
+    router.push('/').then(() => {
+      // 确保新路由已经渲染
+      message.success("登录成功!");
+    });  
 }
 /***************************************注册******************************************* */
 const newu = ref(''); //新账号
@@ -160,8 +165,8 @@ async function onRegest(){
         return ;
     }
     const response =  await service.post(Api.url.regest,{account:newu.value.trim(),password:newp.value.trim(),email:uemail.value.trim()});
-    alert(response.data.message);
-    if(response.status === 400) return;
+    if(response.status === 200) message.success(response.data.message);
+    else {message.error(response.data.message); return;}
     switchLogin_Regest();
 }
 /***************************************忘记密码******************************************* */
@@ -169,8 +174,8 @@ const conp = ref(''); //验证码
 const np = ref(''); //新密码
 async function onFindAc() {
   const resp = await service.post(Api.url.forget,{email:uemail.value.trim(),code:conp.value.trim(),newpwd:np.value.trim()});
-  alert(resp.data.message);
-  if(resp.status == 400) return;
+  if(resp.status === 200) message.success(resp.data.message);
+  else {message.error(resp.data.message); return;}  
   switchLogin_Forgot();
 }
 
