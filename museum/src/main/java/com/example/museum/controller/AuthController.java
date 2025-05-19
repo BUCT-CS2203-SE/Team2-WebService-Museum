@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,6 +47,8 @@ public class AuthController {
     private String secret;
     @Value("${jwt.expiration}")
     private Duration expiration;
+
+    private BCryptPasswordEncoder bcen = new BCryptPasswordEncoder();
 
     @PostMapping("/login")
     public Map<String, String> login(@RequestBody Map<String, String> creds) throws UserNotExistException {
@@ -95,7 +98,8 @@ public class AuthController {
         System.out.println("<-- 邮箱校验成功 -->");
         Boolean isAcnt = myce.existByAccount(account),isEml = myce.existByEmail(email);
         if(!isAcnt && !isEml){
-            AppUser user = new AppUser(null, email, account, creds.get("password"),null, false, false);
+            //加密
+            AppUser user = new AppUser(null, email, account,bcen.encode(creds.get("password")),null, false, false);
             if(!myce.addNewUser(user)){
                 response.put("message", "注册失败，服务器异常！");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
@@ -153,7 +157,8 @@ public class AuthController {
             response.put("message", "修改失败！验证码错误，请重新输入！");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);         
         }
-        user.setPassword(newpwd);
+        //加密
+        user.setPassword(bcen.encode(newpwd));
         myce.updateOneUser(user);
         response.put("message", "重置密码成功!");
         return ResponseEntity.ok(response);
