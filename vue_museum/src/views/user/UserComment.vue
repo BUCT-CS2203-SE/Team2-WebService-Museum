@@ -34,11 +34,11 @@ const myFav = ref([
     {id: 3,rid:2, name: "四羊方尊",content:"Nice!", time: new Date().toISOString().slice(0, 19)},
 ])
 const colName = ref([
-      { title: '编号', dataIndex: 'id', key: 'id' },
+      { title: '评论编号', dataIndex: 'id', key: 'id' },
       { title: '文物编号', dataIndex: 'rid', key: 'rid' },
-      { title: '文物名称', dataIndex: 'name', key: 'name' },
-      { title: '评论内容', dataIndex: 'content', key: 'content' },
-      { title: '评论时间', dataIndex: 'time', key: 'time' },
+      { title: '文物名称', dataIndex: 'name', key: 'name' ,widthRatio:2 },
+      { title: '评论内容', dataIndex: 'content', key: 'content' ,widthRatio:5 },
+      { title: '评论时间', dataIndex: 'time', key: 'time' ,widthRatio:1.5 },
 ])
 
 function handleView(item) {
@@ -55,7 +55,7 @@ async function handleDelete(item) {
     const res = await delComts(Api.url.user.delMyComts,{
         id: item.id //评论id
     })
-    if(res) message.success('已删除');
+    if(res) message.success('已删除评论');
   }catch(error){
     message.error("出错了");
   }
@@ -64,7 +64,7 @@ async function OnCilck(){
     console.log(name.value+"as  "+ti.value);
     try{
         myFav.value = await getComtsDetail(Api.url.user.getMyComts,{
-            username: "test",
+            username: localStorage.getItem('username'),
             relicname: name.value,
             content: conten.value,
             time: ti.value
@@ -76,7 +76,6 @@ async function OnCilck(){
 }
 // 激活时执行
 onActivated(() =>{
-    message.info("页面被激活")
     OnCilck();
 })
 </script>

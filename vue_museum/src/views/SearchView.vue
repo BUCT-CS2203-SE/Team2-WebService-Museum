@@ -5,7 +5,7 @@
     <SelectInput v-model="sendInfo.museum" name="所在博物馆" :options="museum"/>
     <SelectInput v-model="sendInfo.sortby" name="排序方式" :options="sortBy"/>
     <InputButton placeholder="文物名称：" v-model="sendInfo.name" />
-    <InputButton placeholder="作家名称：" style="margin-left: -25px;" v-model="sendInfo.artist" />
+    <InputButton placeholder="作家名称：" v-model="sendInfo.artist" />
     <SmoothButton label="查询" @click="Onclick(1)" />
   </div>
 
@@ -39,13 +39,6 @@ import { message } from 'ant-design-vue';
 // 卡片数据，之后可被直接代替，这里的数组元素个数为8，本地得使用require
 const relics = ref([
   {id: 1, src: require("../assets/logo.png"),  title: '文物标题 A' },
-  {id: 2, src: "https://www.njmuseum.com/files/nb/collection/modify/2021/09/28/5%EF%BC%9A3419-B-01.jpg", title: '文物标题 B' },
-  {id: 3, src: "/img/photo/user_default500x500.png",  title: '文物标题 A' },
-  {id: 4, src: require("../assets/logo.png"),  title: '文物标题 A' },
-  {id: 5, src: require("../assets/logo.png"),  title: '文物标题 A' },
-  {id: 6, src: require("../assets/logo.png"),  title: '文物标题 A' },
-  {id: 7, src: require("../assets/logo.png"),  title: '文物标题 A' },
-  {id: 8, src: require("../assets/logo.png"),  title: '文物标题 A' },
 ]);
 
 /**需要发送的结构体 */

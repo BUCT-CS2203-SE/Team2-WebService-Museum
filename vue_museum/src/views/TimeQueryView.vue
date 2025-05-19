@@ -19,7 +19,7 @@
           :key="idx"
           :id="relic.id"
           :src="relic.src"
-          :title="relic.title"
+          :title="relic.Title"
         />
       </div>
       <!-- 修改3: 添加无数据提示 -->
@@ -53,7 +53,7 @@ const time_span = `${props.sta}年 - ${props.end}年`;
 const relics = ref([{
   id: 1,
   src: require('@/assets/logo.png'),
-  title: '文物标题 A'
+  Title: '文物标题 A'
 }]);
 
 // 加载状态

@@ -1,4 +1,6 @@
 import axios from 'axios';
+import router from '@/router'
+import { message } from 'ant-design-vue';
 
 /**
  * 此文件用于与后端交互
@@ -16,14 +18,16 @@ service.interceptors.request.use(
     config => {
       /**调试用 */
       console.log("Now Fecting Url = "+config.url+" --With Data: "+JSON.stringify(config.data));
-      // 登录接口不附带 Authorization 头
-      if (config.url.endsWith('/login')) {
+      const currentRoute = router.currentRoute.value;
+      // 放行公开接口，请求不附带 Authorization 头
+      if (currentRoute.meta.public) {
+        console.log("不添加jwt");
         return config;
       }
-      // 在发送请求之前做些什么，例如添加 token
+      // 在发送请求之前添加 token
       const token = localStorage.getItem('jwt');
       if (token) config.headers.Authorization = `Bearer ${token}`;
-      console.log("开始请求后端,保存有token: "+token);
+      // console.log("开始请求后端,保存有token: "+token);
       return config;
     },
     error => {
@@ -43,11 +47,12 @@ service.interceptors.request.use(
     error => {
       // 对响应错误做点什么
       if (error.response?.status === 401) {
+        if(localStorage.getItem('jwt')) message.error("登录信息过期，请重新登录!");
         localStorage.removeItem('jwt');
         localStorage.removeItem('username');
         localStorage.removeItem('avatar');        
       //   // 跳登录页、清 Token 等
-      //   window.location.hash = '/login';
+        window.location.hash = '/login';
       //   localStorage.removeItem('jwt');
       //   console.log("响应拦截器重定向至登录页");
       }

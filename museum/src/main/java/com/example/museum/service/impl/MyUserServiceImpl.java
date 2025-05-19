@@ -69,4 +69,9 @@ public class MyUserServiceImpl implements MyUserService {
     public Long getIdByAccount(String account){
         return userMapper.getIdByAccount(account);
     }
+
+    @Override
+    public Boolean deleteById(Long uid){
+        return userMapper.deleteById(uid);
+    }
 }

@@ -45,4 +45,10 @@ public interface MyUserService extends UserDetailsService {
      * @return Long
      */
     Long getIdByAccount(String account);
+    /**
+     * 按照用户id删除用户
+     * @param uid 用户id
+     * @return bool
+     */
+    Boolean deleteById(Long uid);
 }

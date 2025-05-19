@@ -216,8 +216,7 @@ async function onFavorite() {
   try{
     const ans = await isFavorite(Api.url.relic.isFav,{
       id:props.id,
-      // username:localStorage.getItem('username'),
-      username:"test",
+      username:localStorage.getItem('username'),
       fav:!relic.value.favorited,
     });
     if(ans) relic.value.favorited = !relic.value.favorited;
@@ -243,8 +242,8 @@ import { ReHistory } from '@/api/SearchRelic'
 async function FetchData(){
   try {
     relic.value = await getDetail(Api.url.relic.detail,
-      {id:props.id,username:"test"});
-    // images.value = relic.value.images;
+      {id:props.id,
+        username:localStorage.getItem('username') });
   } catch (error) {
     message.error("获取文物具体信息失败!");
   }  
@@ -252,7 +251,7 @@ async function FetchData(){
 async function RefreshHis(){
   try{
     const res = await ReHistory(Api.url.relic.rehistory,{
-      username: "test",
+      username: localStorage.getItem('username'),
       rid: props.id
     })
     if(res) message.info("刷新浏览信息成功！");

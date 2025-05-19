@@ -15,7 +15,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
@@ -44,7 +44,7 @@ public class SecurityConfig {
         .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
 
-            .requestMatchers("/comments/**","/test/**","/login","/regest","/forget","/getCode","/user/**").permitAll()
+            .requestMatchers("/test/**","/login","/regest","/forget","/getCode","/relic/**").permitAll()
             .anyRequest().authenticated()
             )
         .logout(out -> out
@@ -57,13 +57,12 @@ public class SecurityConfig {
   }
 
   /**
-   * 暂时采用无密码加密方式，之后再修改
+   * 密码加密
    * @return
    */
-  @SuppressWarnings("deprecation")
   @Bean
   public PasswordEncoder passwordEncoder() {
-      return NoOpPasswordEncoder.getInstance();
+      return new BCryptPasswordEncoder();
   }
 
   @Bean

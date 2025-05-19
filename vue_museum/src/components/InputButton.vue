@@ -36,7 +36,7 @@ function onInput(event) {
 
 /* 隐藏原生样式 */
 .smooth-input {
-  width: 120px;
+  width: 150px;
   padding: 0.6em 1.2em;
   font-size: 1em;
   border: 1px solid #ccc;

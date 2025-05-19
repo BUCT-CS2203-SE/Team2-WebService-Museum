@@ -94,7 +94,7 @@ body {
   transform: translateX(-50%);
   display: flex;
 
-  z-index: 1;
+  /* z-index: 1; */
 }
 
 .bar {

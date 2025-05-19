@@ -14,9 +14,12 @@ export async function getBroswerDetail(url, params) {
         if (!data || !Array.isArray(data)) {
             throw new Error("响应数据格式不正确");
         }
-        data.forEach(element => {    //转变数据形式
-            element.time = new Date(element.time).toLocaleString();
-        })
+        data.forEach((element, index) => {
+        // 序号从 1 开始，如果希望从 0 开始就去掉 +1
+        element.seq = index + 1;                        // 新增序号字段
+        element.time = new Date(element.time)           // 原有时间转换
+                            .toLocaleString();
+        });
         return data;
     }).catch(error => {
         console.error("浏览信息失败:", error);

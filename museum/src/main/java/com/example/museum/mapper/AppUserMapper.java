@@ -31,7 +31,7 @@ public interface AppUserMapper {
      * @return int 受影响的行数
      */
     @Delete("delete from app_user where id = #{id}")
-    int deleteById(@Param("id") Long id);
+    Boolean deleteById(@Param("id") Long id);
 
     @Select("select id from app_user where account = #{ac}")
     Long getIdByAccount(@Param("ac") String account);
