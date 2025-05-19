@@ -63,7 +63,7 @@
 import { reactive, ref, onMounted } from 'vue';
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
-import api from "../api/Api.js"
+import api from "../../api/Api.js"
 import axios from "@/utils/request";//测试时要注释掉，正式使用时取消注释
 
 

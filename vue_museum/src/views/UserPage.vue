@@ -46,7 +46,7 @@ import {
   LogoutOutlined
 } from '@ant-design/icons-vue';
 
-import UserInfoView from './UserInfoView.vue';
+import UserInfoView from './user/UserInfoView.vue';
 import UserFav from './user/UserFav.vue';
 import UserComment from './user/UserComment.vue';
 import UserBrowser from './user/UserBrowser.vue';
@@ -94,15 +94,15 @@ import { message } from 'ant-design-vue';
 const router = useRouter()
 async function handleLogout() {
     await service.post(Api.url.logout,{});
-    // 1. 清除本地存储中的 Token
+    // 1. 清除本地存储中的 信息
     localStorage.removeItem('jwt');
     localStorage.removeItem('username');
     localStorage.removeItem('avatar');                  
     // 2. 取消 axios 请求头上的 Authorization
     delete service.defaults.headers.common['Authorization'];
     message.success("注销成功!");
-    // 3. 跳转回登录页
-    router.push('/login');
+    // 3. 跳转回首页
+    router.push('/');
 }
 </script>
 
