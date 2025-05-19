@@ -90,7 +90,7 @@ async function addComment() {
   if (!txt) return;
   try{
     const apply = await AddComments(Api.url.comments.add_comments,{
-      username: "test", //正式改为localStorage.getItem('username')
+      username: localStorage.getItem('username'),
       id: props.id,
       contents: txt,
       datetime: new Date().toISOString().slice(0, 19) //注意格式
@@ -99,7 +99,7 @@ async function addComment() {
   }catch(error) {message.error(error);}
   comments.value.unshift({
     // id: Date.now(),
-    author: 'test',   //正式改为localStorage.getItem('username')
+    author: localStorage.getItem('username'),
     avatar: user.avatar,
     content: txt,
     datetime: new Date().toLocaleString()

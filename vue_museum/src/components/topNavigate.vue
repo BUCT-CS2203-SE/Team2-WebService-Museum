@@ -34,7 +34,6 @@
   padding: 0px 10px;
   background-color: rgb(17, 17, 17);
   position: relative;
-  //height: 65px;
   height:8vh;
   width: 100%;
   display: grid;
@@ -43,7 +42,7 @@
   font-size: large;
   gap: 60px;
   top: 0;          /* 固定在页面顶部 */
-  z-index: 9999;   /* 确保在最上层 */
+  z-index: 2;   /* 确保在最上层 */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* 添加阴影 */
 }
 .topnav .box1{
