@@ -28,13 +28,14 @@ const ti = ref(null)
 
 // 表格字段二者得绑定在一起
 const myFav = ref([
-    {id: 1, name: "四羊方尊", time: new Date().toISOString().slice(0, 19)},
-    {id: 3, name: "四羊方尊", time: new Date().toISOString().slice(0, 19)},
+    {seq:1,id: 1, name: "四羊方尊", time: new Date().toISOString().slice(0, 19)},
+    {seq:2,id: 3, name: "四羊方尊", time: new Date().toISOString().slice(0, 19)},
 ])
 const colName = ref([
+    { title: '序号', dataIndex: 'seq', key: 'seq' },
       { title: '文物编号', dataIndex: 'id', key: 'id' },
-      { title: '文物名称', dataIndex: 'name', key: 'name' },
-      { title: '浏览时间', dataIndex: 'time', key: 'time' },
+      { title: '文物名称', dataIndex: 'name', key: 'name' ,widthRatio:2},
+      { title: '浏览时间', dataIndex: 'time', key: 'time' ,widthRatio:2},
 ])
 
 function handleView(item) {
@@ -49,7 +50,7 @@ async function handleDelete(item) {
   myFav.value = myFav.value.filter(val => val.id !== item.id);
   try{
     const res = await delBrowser(Api.url.user.delMyBrowser,{
-        username: "test",
+        username: localStorage.getItem('username'),
         rid: item.id
     })
     if(res) message.success('已删除');
@@ -61,7 +62,7 @@ async function OnCilck(){
     console.log(name.value+"as  "+ti.value);
     try{
         myFav.value = await getBroswerDetail(Api.url.user.getMyBrowser,{
-            username: "test",
+            username: localStorage.getItem('username'),
             relicname: name.value,
             time: ti.value
         })
@@ -72,7 +73,6 @@ async function OnCilck(){
 }
 // 激活时执行
 onActivated(() =>{
-    message.info("页面被激活")
     OnCilck();
 })
 </script>

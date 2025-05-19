@@ -31,12 +31,18 @@ const props = defineProps({
     type: Array,
     default: () => []
   },
+  /**
+   * 字段解释：
+   * title  列名
+   * dataIndex  key   数据字段名
+   * widthRatio   列宽比例默认为1
+   */
   columns: {
     type: Array,
     default: () => [
-      { title: '编号', dataIndex: 'id', key: 'id' },
-      { title: '文物名称', dataIndex: 'name', key: 'name' },
-      { title: '收藏时间', dataIndex: 'time', key: 'time' }
+      { title: '编号', dataIndex: 'id', key: 'id' ,widthRatio: 1},
+      { title: '文物名称', dataIndex: 'name', key: 'name'  ,widthRatio: 1},
+      { title: '收藏时间', dataIndex: 'time', key: 'time'  ,widthRatio: 1}
     ]
   },
   actionKey: {
@@ -48,11 +54,28 @@ const props = defineProps({
 const emit = defineEmits(['view', 'delete']);
 
 // 给传入的 columns 增加居中对齐属性
+// const computedColumns = computed(() => {
+//   return props.columns.map(col => ({
+//     ...col,
+//     align: 'center'
+//   }));
+// });
 const computedColumns = computed(() => {
-  return props.columns.map(col => ({
-    ...col,
-    align: 'center'
-  }));
+  // 计算所有列的比率总和
+  const totalRatio = props.columns.reduce(
+    (sum, col) => sum + (col.widthRatio || 1), 0
+  );
+  
+  // 生成新的列配置，带有 width 属性（百分比）
+  return props.columns.map(col => {
+    const ratio = col.widthRatio || 1;
+    const percent = ((ratio / totalRatio) * 100).toFixed(2) + '%';
+    return {
+      ...col,
+      width: percent,
+      align: 'center'   // 保留你已有的样式
+    };
+  });
 });
 </script>
 <style scoped>
@@ -80,6 +103,8 @@ const computedColumns = computed(() => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: normal;       /* 允许换行 */
+  word-break: break-word;    /* 长单词或 URL 换行 */
 }
 
 /* 操作按钮，绝对定位脱离文档流 */
