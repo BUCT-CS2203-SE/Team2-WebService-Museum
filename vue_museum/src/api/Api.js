@@ -105,21 +105,10 @@ export default {
         },
 
         user:{
-            getInfo:"/user/getInfo",
-            /** get  请求参数：用户名，返回一个包含用户数据的对象，说明如下：
-             * username  用户名   string类型 例如：'test'
-             * realname  真实姓名 string类型 例如：'xxx'
-             * idNumber  身份证号  string类型 
-             * phone     手机号   string类型
-             * email     邮箱     string类型
-             * avatar    头像图片地址  string类型 例如：'http://xxx.com/xxx.jpg'
-            */
             sendInfo:"/user/sendInfo",
             /**post 请求参数：用户名，更新除了用户名以外的信息
+             * username  用户名
              * password  密码      string类型
-             * realname  真实姓名  string类型
-             * idNumber  身份证号  string类型
-             * phone     手机号    string类型
              * email     邮箱      string类型
              */
             upgradeAvatar:"/user/upgradeAvatar",

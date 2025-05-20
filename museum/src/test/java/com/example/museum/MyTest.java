@@ -29,6 +29,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootTest
 public class MyTest {
@@ -81,11 +82,12 @@ public class MyTest {
     // }
     // @Test
     // void test2(){
-    //     myce.deleteById(6L);
-        // AppUser user = myce.findByAccount("test1");
-        // user.setPassword("1234");
-        // myce.updateOneUser(user);
-        // System.out.println(user);
+    //     // myce.deleteById(6L);
+    //     AppUser user = myce.findByAccount("test");
+    //     user.setPassword(new BCryptPasswordEncoder().encode("123"));
+    //     user.setEmail("3309296020@qq.com");
+    //     myce.updateOneUser(user);
+    //     System.out.println(user);
     // }
 
     // @Autowired

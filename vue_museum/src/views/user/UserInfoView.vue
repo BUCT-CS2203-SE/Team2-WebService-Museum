@@ -8,8 +8,7 @@
         list-type="picture-card"
         class="avatar-uploader"
         :show-upload-list="false"
-        :before-upload="beforeUpload"
-        @change="handleAvatarChange"
+        :before-upload="handleManualUpload"
       >
         <img v-if="formState.avatar" :src="formState.avatar" alt="头像" />
         <div v-else>
@@ -37,14 +36,14 @@
         <a-input-password v-model:value="formState.password" />
       </a-form-item>
 
-      <a-form-item
-        label="确认密码"
-        name="confirmPassword"
-        dependencies="['password']"
-        has-feedback
-      >
-        <a-input-password v-model:value="formState.confirmPassword" />
-      </a-form-item>
+    <a-form-item
+      label="确认密码"
+      name="confirmPassword"
+      :dependencies="['password']" 
+      has-feedback
+    >
+      <a-input-password v-model:value="formState.confirmPassword" />
+    </a-form-item>
 
      
       <a-form-item label="电子邮箱" name="email">
@@ -60,7 +59,7 @@
 </template>
 
 <script setup>
-import { reactive, ref, onMounted } from 'vue';
+import { reactive, ref } from 'vue';
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import api from "../../api/Api.js"
@@ -72,98 +71,96 @@ const loading = ref(false);
 
 // 表单数据
 const formState = reactive({
-  username: '', 
-  password: '',
-  confirmPassword: '',
-  email: '',
-  avatar: '',
+  username: localStorage.getItem('username'), 
+  password: null,
+  confirmPassword: null,
+  email: null,
+  avatar: localStorage.getItem('avatar'),
 });
 
-
 // 表单验证规则（保持不变）
-const rules = {
+import { computed } from 'vue'
+
+const rules = computed(() => ({
   password: [
-    { required: true, message: '请输入密码', trigger: 'blur' },
+    { message: '请输入密码', trigger: 'blur' },
     { min: 1, max: 18, message: '密码长度1-18位', trigger: 'blur' },
   ],
   confirmPassword: [
-    { required: true, message: '请确认密码', trigger: 'blur' },
-    ({ getFieldValue }) => ({
+    // 只有在密码框有内容时，才加 required 规则
+    ...(formState.password
+      ? [{ required: true, message: '请确认密码', trigger: 'blur' }]
+      : []),
+    {
       validator(_, value) {
-        if (!value || getFieldValue('password') === value) {
-          return Promise.resolve();
+        // 如果密码没填，直接通过（因为此时并不要求必填）
+        if (!formState.password) {
+          return Promise.resolve()
         }
-        return Promise.reject('两次输入的密码不一致!');
+        // 密码框有值，再校验两次输入是否一致
+        if (value === formState.password) {
+          return Promise.resolve()
+        }
+        return Promise.reject(new Error('两次输入的密码不一致!'))
       },
-      trigger: 'blur',
-    }),
+      // 确保 change/blur 和 submit 都能触发
+      trigger: ['blur','change'],
+    },
   ],
- 
   email: [
-    { required: true, message: '请输入电子邮箱', trigger: 'blur' },
+    { message: '请输入电子邮箱', trigger: 'blur' },
     { type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' },
   ],
-};
+}))
 
-//  添加获取用户信息的函数
-const fetchUserProfile = async () => {
+
+
+// 头像上传状态变化（ 实际项目中应该上传到服务器）
+const handleManualUpload = async (file) => {
+  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+  const isLt2M = file.size / 1024 / 1024 < 2;
+
+  if (!isJpgOrPng) {
+    message.error('只能上传 JPG/PNG 格式的图片!');
+    return false;
+  }
+  if (!isLt2M) {
+    message.error('图片大小不能超过 2MB!');
+    return false;
+  }
+
+  loading.value = true;
+
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('username', formState.username); // 供后端重命名使用
+
   try {
-    loading.value = true;
-    const response = await axios.get(api.url.user.getInfo,{params:{username:"user"}}); 
-    const userData = response.data;
-    
-    // 将接口数据映射到表单
-    Object.assign(formState, {
-      username: userData.username,
-      
-      email: userData.email,
-      avatar: userData.avatar || 'https://randomuser.me/api/portraits/men/1.jpg', // 默认头像
+    console.log(formData);
+    const response = await axios.post(api.url.user.upgradeAvatar, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
     });
-    
+
+    const url = response.data.url;
+    if (url) {
+      formState.avatar = url;
+      localStorage.setItem('avatar',url);
+      message.success('头像上传成功！');
+    } else {
+      message.error('服务器未返回文件地址');
+    }
   } catch (error) {
-    console.error('获取用户信息失败:', error);
-    message.error('获取用户信息失败');
+    console.error('上传失败', error);
+    message.error('头像上传失败: ' + (error.response?.data?.message || error.message));
   } finally {
     loading.value = false;
   }
+
+  return false; // 阻止默认上传行为
 };
 
- // 组件挂载时获取用户数据
- onMounted(() => {
-   fetchUserProfile();
- });
-
-// 头像上传前的处理（保持不变）
-const beforeUpload = (file) => {
-  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-  if (!isJpgOrPng) {
-    message.error('只能上传JPG/PNG格式的图片!');
-  }
-  const isLt2M = file.size / 1024 / 1024 < 2;
-  if (!isLt2M) {
-    message.error('图片大小不能超过2MB!');
-  }
-  return isJpgOrPng && isLt2M;
-};
-
-// 头像上传状态变化（ 实际项目中应该上传到服务器）
-const handleAvatarChange = (info) => {
-  if (info.file.status === 'uploading') {
-    loading.value = true;
-    return;
-  }
-  if (info.file.status === 'done') {
-    // 这里应该调用API上传头像
-    // 模拟上传成功后更新头像
-    formState.avatar = URL.createObjectURL(api.url.user.upgradeAvatar);
-    loading.value = false;
-    message.success('头像上传成功');
-  }
-  if (info.file.status === 'error') {
-    loading.value = false;
-    message.error('上传失败');
-  }
-};
 
 // 表单提交（ 改为调用API提交数据）
 // 这个表单提交函数是用API接口时用的，上面那个是测试使用
@@ -174,11 +171,14 @@ const onFinish = async (values) => {
       password: values.password,
       
       email: values.email,
-      avatar: values.avatar
     };
-    
-    await axios.put(api.url.user.sendInfo, submitData);
-    message.success('个人信息更新成功');
+    if(!values.password && !values.email) {
+      message.warn("未修改表单信息");
+      return ;
+    }
+    const res = await axios.post(api.url.user.sendInfo, submitData);
+    if(res.data.ans) message.success('个人信息更新成功');
+    else{message.error(res.data.message); return ;}
   } catch (error) {
     message.error('更新失败: ' + (error.response?.data?.message || error.message));
   }
@@ -193,7 +193,9 @@ const onFinishFailed = (errorInfo) => {
 // 重置表单（重置为从接口获取的最新数据）
 const resetForm = async () => {
   try {
-    await fetchUserProfile();
+    formState.confirmPassword = '';
+    formState.email = '';
+    formState.password = '';
     message.info('已重置表单');
   } catch (error) {
     message.error('重置失败');
@@ -209,20 +211,19 @@ const resetForm = async () => {
   padding: 20px;
 }
 
-.avatar-upload {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
+/* 覆盖 picture-card 容器为 120×120 的正方形 */
+.avatar-uploader ::v-deep .ant-upload-select-picture-card {
+  width: 120px;
+  height: 120px;
+  padding: 0;
 }
 
-.avatar-uploader :deep(.ant-upload) {
-  width: 128px;
-  height: 128px;
-}
-
-.avatar-uploader :deep(.ant-upload img) {
+/* 让 img 充满容器又不会超出，并圆角 */
+.avatar-uploader ::v-deep .ant-upload-select-picture-card img {
   width: 100%;
   height: 100%;
+  max-width: 110%;
+  max-height: 110%;
   object-fit: cover;
   border-radius: 50%;
 }

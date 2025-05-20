@@ -44,7 +44,7 @@ public class SecurityConfig {
         .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
 
-            .requestMatchers("/test/**","/login","/regest","/forget","/getCode","/relic/**").permitAll()
+            .requestMatchers("/test/**","/login","/regest","/forget","/getCode","/relic/**","/avatar/**").permitAll()
             .anyRequest().authenticated()
             )
         .logout(out -> out

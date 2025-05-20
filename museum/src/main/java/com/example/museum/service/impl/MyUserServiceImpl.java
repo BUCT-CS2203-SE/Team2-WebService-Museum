@@ -3,6 +3,7 @@ package com.example.museum.service.impl;
 import java.util.List;
 
 import com.example.museum.mapper.AppUserMapper;
+import com.example.museum.mapper.UserMapper;
 import com.example.museum.model.AppUser;
 import com.example.museum.service.MyUserService;
 
@@ -19,6 +20,8 @@ public class MyUserServiceImpl implements MyUserService {
 
     @Autowired
     private AppUserMapper userMapper;
+    @Autowired
+    private UserMapper umer;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -73,5 +76,17 @@ public class MyUserServiceImpl implements MyUserService {
     @Override
     public Boolean deleteById(Long uid){
         return userMapper.deleteById(uid);
+    }
+
+    @Override
+    public Boolean updateUserAvatar(String username,String url){
+        return umer.updateAvatar(username,url) == 1;
+    }
+
+    @Override
+    public Boolean updateUserInfo(String username,String pwd,String email){
+        Boolean has = existByEmail(email);
+        if(has) return false;
+        return umer.updateUserInfo(username, pwd, email) == 1;
     }
 }
