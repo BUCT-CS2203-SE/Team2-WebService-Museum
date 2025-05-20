@@ -51,4 +51,19 @@ public interface MyUserService extends UserDetailsService {
      * @return bool
      */
     Boolean deleteById(Long uid);
+    /**
+     * 更新用户头像url
+     * @param username 用户名
+     * @param url 更新后的url 在本地
+     * @return bool
+     */
+    Boolean updateUserAvatar(String username,String url);
+    /**
+     * 更新用户密码，邮箱
+     * @param username 用户名
+     * @param pwd 新密码
+     * @param email 新邮箱
+     * @return bool
+     */
+    Boolean updateUserInfo(String username,String pwd,String email);
 }
