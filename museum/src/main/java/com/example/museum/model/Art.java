@@ -21,4 +21,8 @@ public class Art {
     private String Dynasty;
     private String Title;
     private String ImgUrl;
+    private String Museum;
+    private String main_start;
+    private String main_end;
+
 }

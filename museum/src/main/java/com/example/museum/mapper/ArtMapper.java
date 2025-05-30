@@ -27,40 +27,25 @@ public interface ArtMapper {
 
     // 获取时间轴数据：每个朝代取一件文物
     @Select("""
-        SELECT a.id,a.ImgUrl,a.Title,a.Dynasty,
-        SUBSTRING(
-            a.Dynasty,
-            LOCATE('（', a.Dynasty) + 1,
-            LOCATE('）', a.Dynasty) - LOCATE('（', a.Dynasty) - 1
-        ) AS date_range
-        FROM art a
+        SELECT 
+            CAST(a.id AS CHAR) AS id,
+            a.ImgUrl AS imgUrl,
+            a.Title AS title,
+            a.Dynasty AS dynasty,
+            CONCAT('约', a.main_start, '年-', a.main_end, '年') AS dateRange
+        FROM Arts_withimg a
         INNER JOIN (
             SELECT MIN(id) AS id
-            FROM art
-            WHERE Dynasty IS NOT NULL AND Dynasty != ''
-            GROUP BY Dynasty
+            FROM Arts_withimg
+            WHERE Dynasty IS NOT NULL AND Dynasty != '' AND main_start IS NOT NULL
+            GROUP BY Dynasty, main_start, main_end
             ) AS t ON a.id = t.id
-            WHERE a.Dynasty IS NOT NULL AND a.Dynasty != ''
-        ORDER BY
-            CASE
-            WHEN a.Dynasty LIKE '%公元前%' THEN 
-                -CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(
-                    SUBSTRING(
-                        a.Dynasty,
-                        LOCATE('（', a.Dynasty) + 1,
-                        LOCATE('）', a.Dynasty) - LOCATE('（', a.Dynasty) - 1
-                    ),
-                    '-', 1), '前', -1
-                ) AS UNSIGNED)
-            ELSE 
-                CAST(SUBSTRING_INDEX(
-                    SUBSTRING(
-                        a.Dynasty,
-                        LOCATE('（', a.Dynasty) + 1,
-                        LOCATE('）', a.Dynasty) - LOCATE('（', a.Dynasty) - 1
-                    ),
-                    '-', 1) AS UNSIGNED)
-        END;
+        WHERE 
+        a.Dynasty IS NOT NULL 
+        AND a.Dynasty != '' 
+        AND a.main_start IS NOT NULL
+        ORDER BY a.main_start ASC;
+
 
     """)
     List<ArtDTO> findTimelineData();
@@ -68,33 +53,14 @@ public interface ArtMapper {
 
 
     @Select("""
-    SELECT a.id, a.ImgUrl AS src, a.Title
-    FROM art a
-    WHERE a.Dynasty IS NOT NULL AND a.Dynasty != ''
-      AND (
-        CASE
-            WHEN a.Dynasty LIKE '%公元前%' THEN 
-                -CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(
-                    SUBSTRING(a.Dynasty, LOCATE('（', a.Dynasty) + 1, LOCATE('）', a.Dynasty) - LOCATE('（', a.Dynasty) - 1),
-                '-', 1), '前', -1) AS SIGNED)
-            ELSE 
-                CAST(SUBSTRING_INDEX(
-                    SUBSTRING(a.Dynasty, LOCATE('（', a.Dynasty) + 1, LOCATE('）', a.Dynasty) - LOCATE('（', a.Dynasty) - 1),
-                '-', 1) AS SIGNED)
-        END
-      ) >= #{sta}
-      AND (
-        CASE
-            WHEN a.Dynasty LIKE '%公元前%' THEN 
-                -CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(
-                    SUBSTRING(a.Dynasty, LOCATE('（', a.Dynasty) + 1, LOCATE('）', a.Dynasty) - LOCATE('（', a.Dynasty) - 1),
-                '-', -1), '前', -1) AS SIGNED)
-            ELSE 
-                CAST(SUBSTRING_INDEX(
-                    SUBSTRING(a.Dynasty, LOCATE('（', a.Dynasty) + 1, LOCATE('）', a.Dynasty) - LOCATE('（', a.Dynasty) - 1),
-                '-', -1) AS SIGNED)
-        END
-      ) <= #{end}
+        SELECT 
+        CAST(a.id AS CHAR) AS id,
+        a.ImgUrl AS src,
+        a.Title AS title
+        FROM Arts_withimg a
+        WHERE a.Dynasty IS NOT NULL AND a.Dynasty != ''
+        AND a.main_start <= #{end}
+        AND a.main_end >= #{sta}
     """)
     List<Map<String, Object>> findArtInDateRange(@Param("sta") int sta, @Param("end") int end);
 }
