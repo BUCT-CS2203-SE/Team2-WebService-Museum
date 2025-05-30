@@ -140,8 +140,8 @@ function go(page) {
 }
 .pagination__btn,
 .pagination__item {
-  width: 36px;
-  height: 32px;
+  /* width: 36px;
+  height: 32px; */
   border: 1px solid #dcdfe6;
   background: #fff;
   color: #606266;

@@ -10,7 +10,7 @@
     </resultMap>
     <select id="SearchRelic" resultMap="relicVOmap">
         SELECT id,Title,ImgUrl
-        FROM art
+        FROM Arts_withimg
         <where>
             <if test="dto.type != null and dto.type != 'null'">
                 AND Classifications = #{dto.type}
@@ -19,7 +19,7 @@
                 AND Dynasty LIKE CONCAT('%', #{dto.time}, '%')
             </if>
             <if test="dto.museum != null and dto.museum != 'null'">
-
+                AND Museum = #{dto.museum}
             </if>
             <if test="dto.name != null and dto.name != ''">
                 AND Title LIKE CONCAT('%', #{dto.name}, '%')
@@ -33,7 +33,7 @@
                 ORDER BY Title ASC
             </when>
             <when test="dto.sortby == 2">
-                ORDER BY CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(Dynasty, '（', -1), '-', 1) AS UNSIGNED)
+                ORDER BY main_start ASC
             </when>
             <otherwise>
                 ORDER BY id ASC
@@ -44,7 +44,7 @@
 
     <select id="CountSearchRelicl" resultType="Long">
         SELECT count(*)
-        FROM art
+        FROM Arts_withimg
         <where>
             <if test="dto.type != null and dto.type != 'null'">
                 AND Classifications = #{dto.type}
@@ -53,7 +53,7 @@
                 AND Dynasty LIKE CONCAT('%', #{dto.time}, '%')
             </if>
             <if test="dto.museum != null and dto.museum != 'null'">
-
+                AND Museum = #{dto.museum}
             </if>
             <if test="dto.name != null and dto.name != ''">
                 AND Title LIKE CONCAT('%', #{dto.name}, '%')
@@ -62,17 +62,6 @@
                 AND Artist = #{dto.artist}
             </if>
         </where>
-        <choose>
-            <when test="dto.sortby == 1">
-                ORDER BY Title ASC
-            </when>
-            <when test="dto.sortby == 2">
-                ORDER BY CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(Dynasty, '（', -1), '-', 1) AS UNSIGNED)
-            </when>
-            <otherwise>
-                ORDER BY id ASC
-            </otherwise>
-        </choose>
     </select>
 
     <resultMap id="Detailvo" type="com.example.museum.vo.DetailVO">
@@ -84,16 +73,17 @@
         <result column="Dimensions" jdbcType="VARCHAR" property="scale"/>
         <result column="Dynasty" jdbcType="VARCHAR" property="era"/>
         <result column="Title" jdbcType="VARCHAR" property="name"/>
+        <result column="PlaceOri" jdbcType="VARCHAR" property="placeori"/>
     </resultMap>
     <select id="getDetailInfo" resultMap="Detailvo">
-    select * from art where id = #{id}
+    select * from Arts_withimg where id = #{id}
     </select>
 
     <select id="getImgUrlLById"
             parameterType="long"
             resultType="java.lang.String">
     SELECT ImgUrl
-    FROM art
+    FROM Arts_withimg
     WHERE id = #{id}
     </select>
 
@@ -120,10 +110,10 @@
                 (CASE WHEN t.Classifications IS NOT NULL AND a.Classifications = t.Classifications THEN 30 ELSE 0 END) +
                 (CASE WHEN t.Title IS NOT NULL AND a.Title LIKE CONCAT('%', t.Title, '%') THEN 50 ELSE 0 END)
             ) AS score
-        FROM art a
+        FROM Arts_withimg a
         JOIN (
             SELECT Artist, Classifications, Title,Materials
-            FROM art
+            FROM Arts_withimg
             WHERE id = #{id}
         ) t
         WHERE a.id != #{id}
@@ -139,7 +129,7 @@
         FROM 
             fav_relic fr
         JOIN app_user ap ON fr.uid = ap.id
-        JOIN art a ON fr.rid = a.id
+        JOIN Arts_withimg a ON fr.rid = a.id
         <where>
             ap.account = #{un}
             
@@ -173,7 +163,7 @@
         FROM 
             history_relic hr
         JOIN app_user ap ON hr.uid = ap.id
-        JOIN art a ON hr.rid = a.id
+        JOIN Arts_withimg a ON hr.rid = a.id
         <where>
             ap.account = #{un}
             

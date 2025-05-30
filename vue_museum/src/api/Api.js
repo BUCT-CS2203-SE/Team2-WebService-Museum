@@ -58,6 +58,7 @@ export default {
              * scale:       文物规格
              * description  文字描述
              * favorited    是否收藏
+             * placeori     来源地
              * related[]    相关文物信息列表，数组元素字段如下：
              * {
              *    name  文物名称
@@ -69,8 +70,8 @@ export default {
             /**post 请求参数：{id 文物id, username 用户名, fav bool值表示是否收藏}
              * @return ans true/false
             OK*/
-
             isFav: '/AuthRelic/relic_isfav',
+            
             /**POST
              * @send map
              * username 用户名

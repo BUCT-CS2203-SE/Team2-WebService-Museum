@@ -26,7 +26,7 @@
     select cr.id as id,cr.rid as rid,a.Title as name,cr.content as content,cr.addtime as time
     from comment_relic cr 
         JOIN app_user ap on ap.id = cr.uid
-        JOIN art a on a.id = cr.rid
+        JOIN Arts_withimg a on a.id = cr.rid
     <where>
         ap.account = #{un}
         <if test="rn != null and rn != ''">

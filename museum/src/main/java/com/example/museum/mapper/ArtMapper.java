@@ -14,15 +14,15 @@ import com.example.museum.dto.ArtDTO;
 public interface ArtMapper {
 
     // 获取所有文物类别（去重）
-    @Select("SELECT DISTINCT Classifications FROM art")
+    @Select("SELECT DISTINCT Classifications FROM Arts_withimg WHERE Classifications IS NOT NULL AND Classifications != ''")
     List<String> findAllClassifications();
 
     // 获取所有朝代（去重，去空）
-    @Select("SELECT DISTINCT Dynasty FROM art WHERE Dynasty IS NOT NULL AND Dynasty != ''")
+    @Select("SELECT DISTINCT Dynasty FROM Arts_withimg WHERE Dynasty IS NOT NULL AND Dynasty != ''")
     List<String> findAllDynasty();
 
     // 获取所有博物馆（去重）?
-    @Select("SELECT DISTINCT location FROM art")
+    @Select("SELECT DISTINCT Museum FROM Arts_withimg")
     List<String> findAllMuseums();
 
     // 获取时间轴数据：每个朝代取一件文物

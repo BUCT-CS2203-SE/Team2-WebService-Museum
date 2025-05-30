@@ -6,7 +6,7 @@
     bordered
     size="middle"
     :pagination="false"
-    :scroll="{ y: 480, x: 'max-content' }"
+    :scroll="{ y: 500 }"
     class="hover-action-table"
   >
     <template #bodyCell="{ column, record }">

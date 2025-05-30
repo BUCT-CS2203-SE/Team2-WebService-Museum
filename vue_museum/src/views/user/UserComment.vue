@@ -36,9 +36,9 @@ const myFav = ref([
 const colName = ref([
       { title: '评论编号', dataIndex: 'id', key: 'id' },
       { title: '文物编号', dataIndex: 'rid', key: 'rid' },
-      { title: '文物名称', dataIndex: 'name', key: 'name' ,widthRatio:2 },
-      { title: '评论内容', dataIndex: 'content', key: 'content' ,widthRatio:5 },
-      { title: '评论时间', dataIndex: 'time', key: 'time' ,widthRatio:1.5 },
+      { title: '文物名称', dataIndex: 'name', key: 'name' ,widthRatio:1 },
+      { title: '评论内容', dataIndex: 'content', key: 'content' ,widthRatio:3 },
+      { title: '评论时间', dataIndex: 'time', key: 'time' ,widthRatio:1 },
 ])
 
 function handleView(item) {

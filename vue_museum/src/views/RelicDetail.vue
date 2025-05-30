@@ -43,6 +43,7 @@
       <div class="detail-info">
         <h2 class="info-title">{{ relic.name }}</h2>
         <p v-if="relic.era" class="info-era">年代：{{ relic.era }}</p>
+        <p v-if="relic.placeori" class="info-era">源自：{{ relic.placeori }}</p>
         <p v-if="relic.type" class="info-era">类别： {{ relic.type }}</p>
         <p v-if="relic.atrist" class="info-era">作家： {{ relic.atrist }}</p>
         <p v-if="relic.credit" class="info-era">题词： {{ relic.credit }}</p>
@@ -136,6 +137,7 @@ const relic = ref({
     "https://www.njmuseum.com/files/nb/collection/modify/2021/09/28/5%EF%BC%9A3419-B-01.jpg"
   ],
   name: '文物名称',
+  placeori: '发源地',
   credit:'题词信息',
   type: '文物类别',
   era: '唐代',
@@ -254,7 +256,7 @@ async function RefreshHis(){
       username: localStorage.getItem('username'),
       rid: props.id
     })
-    if(res) message.info("刷新浏览信息成功！");
+    if(res) console.log("刷新浏览信息成功！");
   }catch(error){
     message.error("刷新失败");
   }
