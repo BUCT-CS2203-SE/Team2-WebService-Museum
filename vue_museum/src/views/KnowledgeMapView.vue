@@ -9,6 +9,7 @@
       <div class="control-container">
 
         <div class="controls">
+          <textarea v-model="cypher" rows="4" cols="50"></textarea><br>
           <button @click="reload">Query</button>
           <button @click="stabilize">Stabilize</button>
         </div>
@@ -61,14 +62,24 @@ import NeoVis from 'neovis.js';
 const cypher = computed(() => {
   // label是类别,name是名称
   const label1 = selected1.value ? `:${selected1.value}` : '';
-  const name1 = selected4.value ? `{name:"${selected4.value}"}` : '';
+  const name1 = selected4.value
+      ? (selected1.value === "Artifact"
+          ? `{Title:"${selected4.value}"}`
+          : `{name:"${selected4.value}"}`)
+      : '';
+  // const name1 = selected4.value ? `{name:"${selected4.value}"}` : '';
   const node1 = (selected1.value || selected4.value || selected2.value) ? `(n${label1} ${name1})` : ''
 
   // 关系
   const relation = selected2.value ? `-[r:${selected2.value}]->` : '';
 
   const label2 = selected3.value ? `:${selected3.value}` : '';
-  const name2 = selected5.value ? `{name:"${selected5.value}"}` : '';
+  const name2 = selected5.value
+      ? (selected3.value === "Artifact"
+          ? `{Title:"${selected5.value}"}`
+          : `{name:"${selected5.value}"}`)
+      : '';
+  // const name2 = selected5.value ? `{name:"${selected5.value}"}` : '';
   const node2 = (selected3.value || selected5.value || selected2.value) ? `(m${label2} ${name2})` : ''
 
   //返回的 n,r,m
@@ -83,7 +94,7 @@ const cypher = computed(() => {
   return `
     MATCH ${node1}${relation}${node2}
     RETURN ${cyReturn}
-    LIMIT 200
+    LIMIT 300
   `
 })
 
@@ -98,34 +109,39 @@ const firstOptions = ref([
   {text: '', value: ''},
   {text: '文物', value: 'Artifact'},
   {text: '作者', value: 'Artist'},
-  {text: '种类', value: 'Category'},
-  {text: '尺寸', value: 'Dimensions'},
+  {text: '种类', value: 'Classification'},
+  {text: '尺寸', value: 'Dimension'},
   {text: '材质', value: 'Material'},
   {text: '博物馆', value: 'Museum'},
-  {text: '时期', value: 'Time'}
+  {text: '时期', value: 'Dynasty'},
+  {text: '来源地', value: 'PlaceOri'},
+  {text: '媒介', value: 'Medium'}
 ])
 
 const secondOptions = ref([
   {text: '', value: ''},
-  {text: '位于', value: '位于'},
-  {text: '创作者', value: '创作者为'},
-  {text: '处于的年代', value: '处于的年代'},
-  {text: '尺寸', value: '尺寸为'},
-  {text: '材质', value: '材质为'},
-  {text: '类型', value: '类型为'}
+  {text: '现藏博物馆', value: '现藏博物馆是'},
+  {text: '创作者', value: '创作者是'},
+  {text: '创造年代', value: '创造年代是'},
+  {text: '媒介', value: '媒介是'},
+  {text: '尺寸', value: '尺寸是'},
+  {text: '材质', value: '材质是'},
+  {text: '来源地', value: '来源地是'},
+  {text: '类型', value: '类型是'}
 ])
 
 const thirdOptions = ref([
   {text: '', value: ''},
   {text: '文物', value: 'Artifact'},
   {text: '作者', value: 'Artist'},
-  {text: '种类', value: 'Category'},
-  {text: '尺寸', value: 'Dimensions'},
+  {text: '种类', value: 'Classification'},
+  {text: '尺寸', value: 'Dimension'},
   {text: '材质', value: 'Material'},
   {text: '博物馆', value: 'Museum'},
-  {text: '时期', value: 'Time'}
+  {text: '时期', value: 'Dynasty'},
+  {text: '来源地', value: 'PlaceOri'},
+  {text: '媒介', value: 'Medium'}
 ])
-
 
 const config = ref({
 
@@ -162,17 +178,17 @@ const config = ref({
         updateInterval: 50       // 更新间隔
       }
     },
-    layout: {
-      improvedLayout: true
-    },
+    // layout: {
+    //   improvedLayout: true
+    // },
   },
   labels: {
     Artifact: {
-      label: 'name',
+      label: 'Title',
       [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
         cypher: {},
         function: {
-          title: (node) => NeoVis.objectToTitleHtml(node, ["id", "name", "type", "Classifications", "Artist", "Description", "Credit", "Materials", "Dimensions", "Dynasty", "Title",])
+          title: (node) => NeoVis.objectToTitleHtml(node, ["id", "Title", "Artist","Dynasty","CreditLine", "Dimensions", "Materials","Inscribed","Museum","PlaceOri","Classifications","Medium","Description"])
         },
         static: {
           // shape: "image",
@@ -189,7 +205,7 @@ const config = ref({
 
       }
     },
-    Category: {
+    Classification: {
       label: 'name',
       [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
         cypher: {},
@@ -199,7 +215,7 @@ const config = ref({
 
       }
     },
-    Dimensions: {
+    Dimension: {
       label: 'name',
       [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
         cypher: {},
@@ -227,7 +243,25 @@ const config = ref({
         },
       }
     },
-    Time: {
+    Dynasty: {
+      label: 'name',
+      [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
+        cypher: {},
+        function: {
+          title: (node) => NeoVis.objectToTitleHtml(node, ["name"])
+        },
+      }
+    },
+    Medium: {
+      label: 'name',
+      [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
+        cypher: {},
+        function: {
+          title: (node) => NeoVis.objectToTitleHtml(node, ["name"])
+        },
+      }
+    },
+    PlaceOri: {
       label: 'name',
       [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
         cypher: {},
@@ -239,7 +273,7 @@ const config = ref({
   },
 
   relationships: {
-    "位于": {
+    "现藏博物馆是": {
       // value: "weight",
       [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
         function: {
@@ -247,7 +281,7 @@ const config = ref({
         },
       }
     },
-    "创作者为": {
+    "创作者是": {
       [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
         cypher: {},
         function: {
@@ -256,7 +290,7 @@ const config = ref({
         static: {}
       }
     },
-    "处于的年代": {
+    "创造年代是": {
       [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
         function: {
           label: (edge) => edge.type
@@ -270,14 +304,28 @@ const config = ref({
         },
       }
     },
-    "材质为": {
+    "材质是": {
       [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
         function: {
           label: (edge) => edge.type
         },
       }
     },
-    "类型为": {
+    "类型是": {
+      [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
+        function: {
+          label: (edge) => edge.type
+        },
+      }
+    },
+    "媒介是": {
+      [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
+        function: {
+          label: (edge) => edge.type
+        },
+      }
+    },
+    "来源地是": {
       [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
         function: {
           label: (edge) => edge.type
@@ -286,7 +334,7 @@ const config = ref({
     }
   },
 
-  // initialCypher: "MATCH (n)-[r]->(m) RETURN n,r,m LIMIT 20",
+  // initialCypher: "MATCH (n)-[r]->(m) RETURN n,r,m ",
   initialCypher: "MATCH (n)-[r]->(m) RETURN n,r,m limit 300",
   // initialCypher: "MATCH (n:Artifact) RETURN n LIMIT 20",
 });
