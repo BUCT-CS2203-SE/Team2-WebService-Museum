@@ -59,8 +59,8 @@ public interface ArtMapper {
         a.Title AS title
         FROM Arts_withimg a
         WHERE a.Dynasty IS NOT NULL AND a.Dynasty != ''
-        AND a.main_start <= #{end}
-        AND a.main_end >= #{sta}
+        AND a.main_start >= #{sta}
+        AND a.main_end <= #{end}
     """)
     List<Map<String, Object>> findArtInDateRange(@Param("sta") int sta, @Param("end") int end);
 }
